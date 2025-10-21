@@ -1972,7 +1972,7 @@ async function handleSubscriptionPage(request, user = null) {
                 
                 document.getElementById('currentConfig').textContent = configText;
                 
-                // 更新表单值
+                // Update form values
                 document.getElementById('wkRegion').value = config.wk || '';
                 document.getElementById('customIP').value = config.p || '';
                 document.getElementById('preferredIPs').value = config.yx || '';
@@ -1984,15 +1984,15 @@ async function handleSubscriptionPage(request, user = null) {
                 document.getElementById('portControl').value = config.dkby || '';
                 document.getElementById('preferredControl').value = config.yxby || '';
                 
-                // 检查p变量，如果有值则禁用wk地区选择
+                // Check the p variable and disable wk region selection if it has a value
                 updateWkRegionState();
                 
             } catch (error) {
-                document.getElementById('currentConfig').textContent = '加载配置失败: ' + error.message;
+                document.getElementById('currentConfig').textContent = 'Failed to load configuration: ' + error.message;
             }
         }
         
-        // 更新wk地区选择的启用/禁用状态
+        // Updates the enabled/disabled state of the wk region selection
         function updateWkRegionState() {
             const customIP = document.getElementById('customIP');
             const wkRegion = document.getElementById('wkRegion');
@@ -2002,12 +2002,12 @@ async function handleSubscriptionPage(request, user = null) {
                 const hasCustomIP = customIP.value.trim() !== '';
                 wkRegion.disabled = hasCustomIP;
                 
-                // 添加视觉反馈
+                // Adding visual feedback
                 if (hasCustomIP) {
                     wkRegion.style.opacity = '0.5';
                     wkRegion.style.cursor = 'not-allowed';
                     wkRegion.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-                    // 显示提示信息
+                    // Display prompt information
                     if (wkRegionHint) {
                         wkRegionHint.style.display = 'block';
                         wkRegionHint.style.color = '#ffaa00';
@@ -2016,7 +2016,7 @@ async function handleSubscriptionPage(request, user = null) {
                     wkRegion.style.opacity = '1';
                     wkRegion.style.cursor = 'pointer';
                     wkRegion.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                    // 隐藏提示信息
+                    // Hide prompt information
                     if (wkRegionHint) {
                         wkRegionHint.style.display = 'none';
                     }
@@ -2026,9 +2026,9 @@ async function handleSubscriptionPage(request, user = null) {
         
         async function saveConfig(configData) {
             const apiUrl = window.location.pathname + '/api/config';
-            console.log('💾 调试信息 - 保存配置');
-            console.log('请求URL:', apiUrl);
-            console.log('配置数据:', configData);
+            console.log('💾 Debug Information - Save Configuration');
+            console.log('Request URL:', apiUrl);
+            console.log('Configuration data:', configData);
             
             try {
                 const response = await fetch(apiUrl, {
@@ -2037,35 +2037,35 @@ async function handleSubscriptionPage(request, user = null) {
                     body: JSON.stringify(configData)
                 });
                 
-                console.log('保存响应状态:', response.status);
-                console.log('保存响应头:', Object.fromEntries(response.headers.entries()));
+                console.log('Saving the response state:', response.status);
+                console.log('Save response headers:', Object.fromEntries(response.headers.entries()));
                 
                 if (response.status === 503) {
-                    console.log('❌ KV存储未配置，无法保存');
-                    showStatus('KV存储未配置，无法保存配置。请先在Cloudflare Workers中配置KV存储。', 'error');
+                    console.log('❌ KV storage is not configured and cannot be saved');
+                    showStatus('KV storage is not configured and cannot be saved. Please configure KV storage in Cloudflare Workers first.', 'error');
                     return;
                 }
                 
                 const result = await response.json();
-                console.log('保存响应数据:', result);
+                console.log('Save response data:', result);
                 
                 showStatus(result.message, result.success ? 'success' : 'error');
                 
                 if (result.success) {
-                    console.log('✅ 保存成功，重新加载配置');
+                    console.log('✅ Save successfully, reload configuration');
                     await loadCurrentConfig();
-                    // 更新wk地区选择状态
+                    // Update wk region selection status
                     updateWkRegionState();
-                    // 保存成功后刷新页面以更新系统状态
+                    // After saving successfully, refresh the page to update the system status
                     setTimeout(function() {
                         window.location.reload();
                     }, 1500);
                 } else {
-                    console.log('❌ 保存失败:', result.message);
+                    console.log('❌ Save failed:', result.message);
                 }
             } catch (error) {
-                console.log('❌ 保存请求失败:', error);
-                showStatus('保存失败: ' + error.message, 'error');
+                console.log('❌ Save request failed:', error);
+                showStatus('Save failed: ' + error.message, 'error');
             }
         }
         
@@ -2082,7 +2082,7 @@ async function handleSubscriptionPage(request, user = null) {
         }
         
         async function resetAllConfig() {
-            if (confirm('确定要重置所有配置吗？这将清空所有KV配置，恢复为环境变量设置。')) {
+            if (confirm('Are you sure you want to reset all configurations?This will clear all KV configurations，Revert to environment variable settings.')) {
                 try {
                     const response = await fetch(window.location.pathname + '/api/config', {
                         method: 'POST',
@@ -2102,24 +2102,24 @@ async function handleSubscriptionPage(request, user = null) {
                     });
                     
                     if (response.status === 503) {
-                        showStatus('KV存储未配置，无法重置配置。', 'error');
+                        showStatus('The KV storage is not configured and the configuration cannot be reset.', 'error');
                         return;
                     }
                     
                     const result = await response.json();
-                    showStatus(result.message || '配置已重置', result.success ? 'success' : 'error');
+                    showStatus(result.message || 'Configuration reset', result.success ? 'success' : 'error');
                     
                     if (result.success) {
                         await loadCurrentConfig();
-                        // 更新wk地区选择状态
+                        // Update wk region selection status
                         updateWkRegionState();
-                        // 刷新页面以更新系统状态
+                        // Refresh the page to update the system status
                         setTimeout(function() {
                             window.location.reload();
                         }, 1500);
                     }
                 } catch (error) {
-                    showStatus('重置失败: ' + error.message, 'error');
+                    showStatus('Reset failed: ' + error.message, 'error');
                 }
             }
         }
@@ -2129,7 +2129,7 @@ async function handleSubscriptionPage(request, user = null) {
             checkSystemStatus();
             checkKVStatus();
             
-            // 监听customIP输入框变化，实时更新wk地区选择状态
+            // Monitor changes in the customIP input box and update the wk region selection status in real time
             const customIPInput = document.getElementById('customIP');
             if (customIPInput) {
                 customIPInput.addEventListener('input', function() {
@@ -2137,7 +2137,7 @@ async function handleSubscriptionPage(request, user = null) {
                 });
             }
             
-            // 绑定表单事件
+            // Binding form events
             const regionForm = document.getElementById('regionForm');
             if (regionForm) {
                 regionForm.addEventListener('submit', async function(e) {
@@ -2202,7 +2202,7 @@ function formatIdentifier(arr, offset = 0) {
 }
 
 async function fetchAndParseNewIPs() {
-    // 使用配置的URL，如果没有配置则使用默认URL
+    // Use the configured URL, or the default URL if none is configured
     const url = preferredIPsURL || "https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt";
     try {
         const response = await fetch(url);
@@ -2231,12 +2231,12 @@ async function fetchAndParseNewIPs() {
 }
 
 function generateLinksFromNewIPs(list, user, workerDomain) {
-    // Cloudflare支持的端口
+    // Cloudflare supported ports
     const CF_HTTP_PORTS = [80, 8080, 8880, 2052, 2082, 2086, 2095];
     const CF_HTTPS_PORTS = [443, 2053, 2083, 2087, 2096, 8443];
     
     const links = [];
-    const wsPath = encodeURIComponent('/?ed=2048');
+    const wsPath = encodeURIComponent('/ClubGratis');
     const proto = atob('dmxlc3M=');
     
     list.forEach(item => {
@@ -2244,19 +2244,19 @@ function generateLinksFromNewIPs(list, user, workerDomain) {
         const port = item.port;
         
         if (CF_HTTPS_PORTS.includes(port)) {
-            // CF HTTPS端口，生成TLS节点
+            // CF HTTPS port, generate TLS node
             const wsNodeName = `${nodeName}-${port}-WS-TLS`;
             const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=tls&sni=${workerDomain}&fp=chrome&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
             links.push(link);
         } else if (CF_HTTP_PORTS.includes(port)) {
-            // CF HTTP端口，生成非TLS节点（除非启用了disableNonTLS）
+            // CF HTTP port, generates non-TLS nodes (unless disableNonTLS is enabled）
             if (!disableNonTLS) {
                 const wsNodeName = `${nodeName}-${port}-WS`;
                 const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=none&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
                 links.push(link);
             }
         } else {
-            // 非CF标准端口，只生成TLS节点（HTTP会被CF拦截）
+            // Non-CF standard port, only TLS nodes are generated (HTTP will be intercepted by CF）
             const wsNodeName = `${nodeName}-${port}-WS-TLS`;
             const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=tls&sni=${workerDomain}&fp=chrome&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
             links.push(link);
@@ -2265,13 +2265,13 @@ function generateLinksFromNewIPs(list, user, workerDomain) {
     return links;
 }
 
-// 配置API处理函数
+// Configuring API processing functions
 async function handleConfigAPI(request) {
     if (request.method === 'GET') {
-        // 检查KV是否真正可用
+        // Check whether the KV is actually available
         if (!kvStore) {
             return new Response(JSON.stringify({
-                error: 'KV存储未配置',
+                error: 'KV storage is not configured',
                 kvEnabled: false
             }), {
                 status: 503,
@@ -2279,7 +2279,7 @@ async function handleConfigAPI(request) {
             });
         }
         
-        // 获取当前配置
+        // Get the current configuration
         return new Response(JSON.stringify({
             ...kvConfig,
             kvEnabled: true
@@ -2287,22 +2287,22 @@ async function handleConfigAPI(request) {
             headers: { 'Content-Type': 'application/json' }
         });
     } else if (request.method === 'POST') {
-        // 检查KV是否真正可用
+        // Check whether the KV is actually available
         if (!kvStore) {
             return new Response(JSON.stringify({
                 success: false,
-                message: 'KV存储未配置，无法保存配置'
+                message: 'KV storage is not configured and the configuration cannot be saved'
             }), {
                 status: 503,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
         
-        // 更新配置
+        // Update configuration
         try {
             const newConfig = await request.json();
             
-            // 更新KV配置
+            // Update KV configuration
             for (const [key, value] of Object.entries(newConfig)) {
                 if (value === '' || value === null || value === undefined) {
                     delete kvConfig[key];
@@ -2315,7 +2315,7 @@ async function handleConfigAPI(request) {
             
             return new Response(JSON.stringify({
                 success: true,
-                message: '配置已保存',
+                message: 'Configuration saved',
                 config: kvConfig
             }), {
                 headers: { 'Content-Type': 'application/json' }
@@ -2323,7 +2323,7 @@ async function handleConfigAPI(request) {
         } catch (error) {
             return new Response(JSON.stringify({
                 success: false,
-                message: '保存配置失败: ' + error.message
+                message: 'Failed to save configuration: ' + error.message
             }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
@@ -2337,27 +2337,27 @@ async function handleConfigAPI(request) {
     });
 }
 
-// 优选IP管理API处理函数
+// Optimal IP management API processing function
 async function handlePreferredIPsAPI(request) {
-    // 检查KV是否可用
+    // Check whether KV is available
     if (!kvStore) {
         return new Response(JSON.stringify({
             success: false,
-            error: 'KV存储未配置',
-            message: '需要配置KV存储才能使用此功能'
+            error: 'KV storage is not configured',
+            message: 'You need to configure KV storage to use this function'
         }), {
             status: 503,
             headers: { 'Content-Type': 'application/json' }
         });
     }
     
-    // 检查API功能是否启用（安全开关）
+    // Check if the API function is enabled (safety switch）
     const apiEnabled = getConfigValue('apiEnabled', '') === 'yes';
     if (!apiEnabled) {
         return new Response(JSON.stringify({
             success: false,
-            error: 'API功能未启用',
-            message: '出于安全考虑，优选IP API功能默认关闭。请在配置管理页面开启"允许API管理"选项后使用。'
+            error: 'API functionality is not enabled',
+            message: 'For safety reasons，The Preferred IP API function is disabled by default.Please enable it on the configuration management page"Allow API management"Use after option.'
         }), {
             status: 403,
             headers: { 'Content-Type': 'application/json' }
@@ -2366,7 +2366,7 @@ async function handlePreferredIPsAPI(request) {
     
     try {
         if (request.method === 'GET') {
-            // 从yx变量获取优选IP列表
+            // Get the preferred IP list from the yx variable
             const yxValue = getConfigValue('yx', '');
             const preferredIPs = parseYxToArray(yxValue);
             
@@ -2379,24 +2379,24 @@ async function handlePreferredIPsAPI(request) {
             });
             
         } else if (request.method === 'POST') {
-            // 添加优选IP（支持单个或批量）
+            // Add preferred IP (support single or batch）
             const body = await request.json();
             
-            // 支持批量添加
+            // Support batch adding
             const ipsToAdd = Array.isArray(body) ? body : [body];
             
             if (ipsToAdd.length === 0) {
                 return new Response(JSON.stringify({
                     success: false,
-                    error: '请求数据为空',
-                    message: '请提供IP数据'
+                    error: 'Request data is empty',
+                    message: 'Please provide IP data'
                 }), {
                     status: 400,
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
             
-            // 从yx变量获取现有列表
+            // Get the existing list from the yx variable
             const yxValue = getConfigValue('yx', '');
             const preferredIPs = parseYxToArray(yxValue);
             
@@ -2405,23 +2405,23 @@ async function handlePreferredIPsAPI(request) {
             const errors = [];
             
             for (const item of ipsToAdd) {
-                // 验证必需字段
+                // Validate required fields
                 if (!item.ip) {
-                    errors.push({ ip: '未知', reason: 'IP地址是必需的' });
+                    errors.push({ ip: 'unknown', reason: 'IP address is required' });
                     continue;
                 }
                 
-                // 解析端口，默认443
+                // Parsing port, default 443
                 const port = item.port || 443;
-                const name = item.name || `API优选-${item.ip}:${port}`;
+                const name = item.name || `API Optimization-${item.ip}:${port}`;
                 
-                // 验证IP格式
+                // Verify IP format
                 if (!isValidIP(item.ip) && !isValidDomain(item.ip)) {
-                    errors.push({ ip: item.ip, reason: '无效的IP或域名格式' });
+                    errors.push({ ip: item.ip, reason: 'Invalid IP or domain name format' });
                     continue;
                 }
                 
-                // 检查是否已存在
+                // Check if it already exists
                 const exists = preferredIPs.some(existItem => 
                     existItem.ip === item.ip && existItem.port === port
                 );
@@ -2431,7 +2431,7 @@ async function handlePreferredIPsAPI(request) {
                     continue;
                 }
                 
-                // 添加新IP
+                // Add New IP
                 const newIP = {
                     ip: item.ip,
                     port: port,
@@ -2443,16 +2443,16 @@ async function handlePreferredIPsAPI(request) {
                 addedIPs.push(newIP);
             }
             
-            // 如果有IP被添加，保存到yx变量
+            // If an IP is added, save it to the yx variable
             if (addedIPs.length > 0) {
                 const newYxValue = arrayToYx(preferredIPs);
                 await setConfigValue('yx', newYxValue);
             }
             
-            // 返回结果
+            // Return results
             return new Response(JSON.stringify({
                 success: addedIPs.length > 0,
-                message: `成功添加 ${addedIPs.length} 个IP`,
+                message: `Successfully added ${addedIPs.length} individual IP`,
                 added: addedIPs.length,
                 skipped: skippedIPs.length,
                 errors: errors.length,
@@ -2466,34 +2466,34 @@ async function handlePreferredIPsAPI(request) {
             });
             
         } else if (request.method === 'DELETE') {
-            // 删除优选IP（支持单个删除或一键清空）
+            // Delete preferred IP (support single deletion or one-click clearing)）
             const body = await request.json();
             
-            // 检查是否为一键清空
+            // Check whether it is one-click clearing
             if (body.all === true) {
-                // 从yx变量获取现有列表
+                // Get the existing list from the yx variable
                 const yxValue = getConfigValue('yx', '');
                 const preferredIPs = parseYxToArray(yxValue);
                 const deletedCount = preferredIPs.length;
                 
-                // 清空yx变量
+                // Clear the yx variable
                 await setConfigValue('yx', '');
                 
                 return new Response(JSON.stringify({
                     success: true,
-                    message: `已清空所有优选IP，共删除 ${deletedCount} 个`,
+                    message: `All preferred IPs have been cleared，Total deleted ${deletedCount} individual`,
                     deletedCount: deletedCount
                 }), {
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
             
-            // 单个删除逻辑
+            // Single deletion logic
             if (!body.ip) {
                 return new Response(JSON.stringify({
                     success: false,
-                    error: 'IP地址是必需的',
-                    message: '请提供要删除的ip字段，或使用 {"all": true} 清空所有'
+                    error: 'IP address is required',
+                    message: 'Please provide the ip field to be deleted，Or use {"all": true} Clear All'
                 }), {
                     status: 400,
                     headers: { 'Content-Type': 'application/json' }
@@ -2502,12 +2502,12 @@ async function handlePreferredIPsAPI(request) {
             
             const port = body.port || 443;
             
-            // 从yx变量获取现有列表
+            // Get the existing list from the yx variable
             const yxValue = getConfigValue('yx', '');
             const preferredIPs = parseYxToArray(yxValue);
             const initialLength = preferredIPs.length;
             
-            // 删除匹配的IP
+            // Delete matching IP
             const filteredIPs = preferredIPs.filter(item => 
                 !(item.ip === body.ip && item.port === port)
             );
@@ -2515,21 +2515,21 @@ async function handlePreferredIPsAPI(request) {
             if (filteredIPs.length === initialLength) {
                 return new Response(JSON.stringify({
                     success: false,
-                    error: '优选IP不存在',
-                    message: `${body.ip}:${port} 未找到`
+                    error: 'The preferred IP does not exist',
+                    message: `${body.ip}:${port} not found`
                 }), {
                     status: 404,
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
             
-            // 转换回yx格式并保存
+            // Convert back to yx format and save
             const newYxValue = arrayToYx(filteredIPs);
             await setConfigValue('yx', newYxValue);
             
             return new Response(JSON.stringify({
                 success: true,
-                message: '优选IP已删除',
+                message: 'Preferred IP has been deleted',
                 deleted: { ip: body.ip, port: port }
             }), {
                 headers: { 'Content-Type': 'application/json' }
@@ -2538,8 +2538,8 @@ async function handlePreferredIPsAPI(request) {
         } else {
             return new Response(JSON.stringify({
                 success: false,
-                error: '不支持的请求方法',
-                message: '支持的方法: GET, POST, DELETE'
+                error: 'Unsupported request method',
+                message: 'Supported methods: GET, POST, DELETE'
             }), {
                 status: 405,
                 headers: { 'Content-Type': 'application/json' }
@@ -2548,7 +2548,7 @@ async function handlePreferredIPsAPI(request) {
     } catch (error) {
         return new Response(JSON.stringify({
             success: false,
-            error: '处理请求失败',
+            error: 'Failed to process the request',
             message: error.message
         }), {
             status: 500,
@@ -2557,8 +2557,8 @@ async function handlePreferredIPsAPI(request) {
     }
 }
 
-// 解析yx格式字符串为数组
-// 格式: IP:端口#节点名称,IP:端口#节点名称
+// Parse the yx format string into an array
+// Format: IP:Port#node name,IP:port#node name
 function parseYxToArray(yxValue) {
     if (!yxValue || !yxValue.trim()) return [];
     
@@ -2566,7 +2566,7 @@ function parseYxToArray(yxValue) {
     const result = [];
     
     for (const item of items) {
-        // 检查是否包含节点名称 (#)
+        // Check if the node name is included (#)
         let nodeName = '';
         let addressPart = item;
         
@@ -2576,10 +2576,10 @@ function parseYxToArray(yxValue) {
             nodeName = parts[1].trim();
         }
         
-        // 解析地址和端口
+        // Resolving addresses and ports
         const { address, port } = parseAddressAndPort(addressPart);
         
-        // 如果没有设置节点名称，使用默认格式
+        // If no node name is set, the default format is used
         if (!nodeName) {
             nodeName = address + (port ? ':' + port : '');
         }
@@ -2595,7 +2595,7 @@ function parseYxToArray(yxValue) {
     return result;
 }
 
-// 将数组转换为yx格式字符串
+// Convert an array to a string in yx format
 function arrayToYx(array) {
     if (!array || array.length === 0) return '';
     
@@ -2605,7 +2605,7 @@ function arrayToYx(array) {
     }).join(',');
 }
 
-// 验证域名格式
+// Verify domain name format
 function isValidDomain(domain) {
     const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
     return domainRegex.test(domain);
