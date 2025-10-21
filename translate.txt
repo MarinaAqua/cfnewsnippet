@@ -1623,69 +1623,69 @@ async function handleSubscriptionPage(request, user = null) {
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">SOCKS5 Configuration (s):</label>
-                        <input type="text" id="socksConfig" placeholder="例如: user:pass@host:port 或 host:port" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                        <small style="color: #00aa00; font-size: 0.85rem;">SOCKS5代理地址，用于转发所有出站流量</small>
+                        <input type="text" id="socksConfig" placeholder="For example: user:pass@host:port or host:port" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
+                        <small style="color: #00aa00; font-size: 0.85rem;">SOCKS5 proxy address used to forward all outbound traffic</small>
                     </div>
-                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">保存配置</button>
+                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Save Configuration</button>
                 </form>
                 
-                <h3 style="color: #00ff00; margin: 20px 0 15px 0; font-size: 1.2rem;">高级控制</h3>
+                <h3 style="color: #00ff00; margin: 20px 0 15px 0; font-size: 1.2rem;">Advanced Control</h3>
                 <form id="advancedConfigForm" style="margin-bottom: 20px;">
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">允许API管理 (apiEnabled):</label>
+                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Allow API management (apiEnabled):</label>
                         <select id="apiEnabled" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">默认（关闭API）</option>
-                            <option value="yes">开启API管理</option>
+                            <option value="">Default (close API）</option>
+                            <option value="yes">Enable API management</option>
                         </select>
-                        <small style="color: #ffaa00; font-size: 0.85rem;">⚠️ 安全提醒：开启后允许通过API动态添加优选IP。建议仅在需要时开启。</small>
+                        <small style="color: #ffaa00; font-size: 0.85rem;">⚠️ Security reminder: After turning it on, you can dynamically add preferred IP addresses through the API. It is recommended to turn it on only when needed。</small>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">地区匹配 (rm):</label>
+                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Region Matching (rm):</label>
                         <select id="regionMatching" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">默认（启用地区匹配）</option>
-                            <option value="no">关闭地区匹配</option>
+                            <option value="">Default (region matching enabled）</option>
+                            <option value="no">Turn off regional matching</option>
                         </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">设置为"关闭"时不进行地区智能匹配</small>
+                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Off", no region smart matching is performed</small>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">降级控制 (qj):</label>
+                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Degradation Control (qj):</label>
                         <select id="downgradeControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">默认（不启用降级）</option>
-                            <option value="no">启用降级模式</option>
+                            <option value="">Default (downgrade is not enabled）</option>
+                            <option value="no">Enable degraded mode</option>
                         </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">设置为"启用"时：CF直连失败→SOCKS5连接→fallback地址</small>
+                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Enable": CF direct connection fails → SOCKS5 connection → fallback address</small>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">TLS控制 (dkby):</label>
+                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">TLS Control (dkby):</label>
                         <select id="portControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">默认（保留所有节点）</option>
-                            <option value="yes">仅TLS节点</option>
+                            <option value="">Default (keep all nodes）</option>
+                            <option value="yes">TLS-only nodes</option>
                         </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">设置为"仅TLS节点"时只生成带TLS的节点，不生成非TLS节点（如80端口）</small>
+                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "TLS nodes only", only nodes with TLS will be generated, and non-TLS nodes (such as port 80) will not be generated. </small>
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">优选控制 (yxby):</label>
+                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Optimal control (yxby):</label>
                         <select id="preferredControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">默认（启用优选）</option>
-                            <option value="yes">关闭优选</option>
+                            <option value="">Default (Enable Preference）</option>
+                            <option value="yes">Close Preferences</option>
                         </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">设置为"关闭优选"时只使用原生地址，不生成优选IP和域名节点</small>
+                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Off Preferred", only the native address is used, and no preferred IP and domain name nodes are generated.</small>
                     </div>
-                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">保存高级配置</button>
+                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Save Advanced Configuration</button>
                 </form>
                 <div id="currentConfig" style="background: rgba(0, 0, 0, 0.9); border: 1px solid #00ff00; padding: 15px; margin: 10px 0; font-family: 'Courier New', monospace; color: #00ff00;">
-                    加载中...
+                    loading...
                 </div>
-                <button onclick="loadCurrentConfig()" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">刷新配置</button>
-                <button onclick="resetAllConfig()" style="background: rgba(255, 0, 0, 0.15); border: 2px solid #ff0000; padding: 12px 24px; color: #ff0000; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: 0 0 8px #ff0000; transition: all 0.4s ease;">重置配置</button>
+                <button onclick="loadCurrentConfig()" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Refresh Configuration</button>
+                <button onclick="resetAllConfig()" style="background: rgba(255, 0, 0, 0.15); border: 2px solid #ff0000; padding: 12px 24px; color: #ff0000; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: 0 0 8px #ff0000; transition: all 0.4s ease;">Reset Configuration</button>
             </div>
             <div id="statusMessage" style="display: none; padding: 10px; margin: 10px 0; border: 1px solid #00ff00; background: rgba(0, 20, 0, 0.8); color: #00ff00; text-shadow: 0 0 5px #00ff00;"></div>
         </div>
         
         <div class="card">
-            <h2 class="card-title">[ 相关链接 ]</h2>
+            <h2 class="card-title">[ Related links ]</h2>
             <div style="text-align: center; margin: 20px 0;">
-                <a href="https://github.com/byJoey/cfnew" target="_blank" style="color: #00ff00; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: 0 0 5px #00ff00;">GitHub 项目</a>
+                <a href="https://github.com/byJoey/cfnew" target="_blank" style="color: #00ff00; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: 0 0 5px #00ff00;">GitHub Project</a>
                 <a href="https://www.youtube.com/@joeyblog" target="_blank" style="color: #00ff00; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: 0 0 5px #00ff00;">YouTube @joeyblog</a>
             </div>
         </div>
@@ -1699,7 +1699,7 @@ async function handleSubscriptionPage(request, user = null) {
                 document.getElementById("clientSubscriptionUrl").textContent = subscriptionUrl;
                 document.getElementById("clientSubscriptionUrl").style.display = "block";
                 navigator.clipboard.writeText(subscriptionUrl).then(function() {
-                    alert("V2Ray 订阅链接已复制");
+                    alert("V2Ray Subscription link copied");
                 });
             } else {
                 var encodedUrl = encodeURIComponent(subscriptionUrl);
@@ -1710,7 +1710,7 @@ async function handleSubscriptionPage(request, user = null) {
                     var displayName = clientType.toUpperCase();
                     if (clientType === atob('c3VyZ2U=')) displayName = 'SURGE';
                     if (clientType === atob('c2luZ2JveA==')) displayName = 'SING-BOX';
-                    alert(displayName + " 订阅链接已复制");
+                    alert(displayName + " Subscription link copied");
                 });
             }
         }
@@ -1726,12 +1726,12 @@ async function handleSubscriptionPage(request, user = null) {
                     document.getElementById("base64SubscriptionUrl").textContent = base64Content;
                     document.getElementById("base64SubscriptionUrl").style.display = "block";
                     navigator.clipboard.writeText(base64Content).then(function() {
-                        alert("Base64订阅内容已复制");
+                        alert("Base64 subscription content copied");
                     });
                 })
                 .catch(function(error) {
-                    console.error("获取订阅失败:", error);
-                    alert("获取订阅失败，请重试");
+                    console.error("Failed to obtain subscription:", error);
+                    alert("Failed to obtain subscription, please try again");
                 });
         }
         
@@ -1787,12 +1787,12 @@ async function handleSubscriptionPage(request, user = null) {
                 const regionMatch = document.getElementById('regionMatch');
                 
                 const regionNames = {
-                    'US': '🇺🇸 美国', 'SG': '🇸🇬 新加坡', 'JP': '🇯🇵 日本', 'HK': '🇭🇰 香港',
-                    'KR': '🇰🇷 韩国', 'DE': '🇩🇪 德国', 'SE': '🇸🇪 瑞典', 'NL': '🇳🇱 荷兰',
-                    'FI': '🇫🇮 芬兰', 'GB': '🇬🇧 英国'
+                    'US': '🇺🇸 USA', 'SG': '🇸🇬 Singapore', 'JP': '🇯🇵 Japan', 'HK': '🇭🇰 Hongkong',
+                    'KR': '🇰🇷 South Korea', 'DE': '🇩🇪 Germany', 'SE': '🇸🇪 Sweden', 'NL': '🇳🇱 Netherlands',
+                    'FI': '🇫🇮 Finland', 'GB': '🇬🇧 U.K.'
                 };
                 
-                let detectedRegion = 'US'; // 默认值
+                let detectedRegion = 'US'; // default value
                 let isCustomIPMode = false;
                 let isManualRegionMode = false;
                 try {
@@ -1804,64 +1804,64 @@ async function handleSubscriptionPage(request, user = null) {
                         isCustomIPMode = true;
                         detectedRegion = 'CUSTOM';
                         
-                        // 获取自定义IP的详细信息
-                        const customIPInfo = data.customIP || '未知';
+                        // Get detailed information about custom IP
+                        const customIPInfo = data.customIP || 'unknown';
                         
-                        geoInfo.innerHTML = '检测方式: <span style="color: #ffaa00;">⚙️ 自定义ProxyIP模式 (p变量启用)</span>';
-                        regionStatus.innerHTML = 'Worker地区: <span style="color: #ffaa00;">🔧 自定义IP模式 (已禁用地区匹配)</span>';
+                        geoInfo.innerHTML = 'Detection method: <span style="color: #ffaa00;">⚙️ Custom ProxyIP mode (enabled by the p variable)</span>';
+                        regionStatus.innerHTML = 'Worker Area: <span style="color: #ffaa00;">🔧 Custom IP Mode (region matching disabled)</span>';
                         
-                        // 显示自定义IP配置状态，包含具体IP
-                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP状态: <span style="color: #ffaa00;">🔧 使用自定义ProxyIP: ' + customIPInfo + '</span>';
-                        if (currentIP) currentIP.innerHTML = '当前使用IP: <span style="color: #ffaa00;">✅ ' + customIPInfo + ' (p变量配置)</span>';
-                        if (regionMatch) regionMatch.innerHTML = '地区匹配: <span style="color: #ffaa00;">⚠️ 自定义IP模式，地区选择已禁用</span>';
+                        // Displays the custom IP configuration status, including the specific IP
+                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #ffaa00;">🔧 Using a custom ProxyIP: ' + customIPInfo + '</span>';
+                        if (currentIP) currentIP.innerHTML = 'Current IP: <span style="color: #ffaa00;">✅ ' + customIPInfo + ' (p variable configuration)</span>';
+                        if (regionMatch) regionMatch.innerHTML = 'Region Matching: <span style="color: #ffaa00;">⚠️ Custom IP mode, region selection disabled</span>';
                         
-                        return; // 提前返回，不执行后续的地区匹配逻辑
-                    } else if (data.detectionMethod === '手动指定地区') {
+                        return; // Return early and do not execute subsequent region matching logic
+                    } else if (data.detectionMethod === 'Manually specify region') {
                         isManualRegionMode = true;
                         detectedRegion = data.region;
                         
-                        geoInfo.innerHTML = '检测方式: <span style="color: #44aa44;">手动指定地区</span>';
-                        regionStatus.innerHTML = 'Worker地区: <span style="color: #44ff44;">🎯 ' + regionNames[detectedRegion] + ' (手动指定)</span>';
+                        geoInfo.innerHTML = 'Detection method: <span style="color: #44aa44;">Manually specify region</span>';
+                        regionStatus.innerHTML = 'Worker Area: <span style="color: #44ff44;">🎯 ' + regionNames[detectedRegion] + ' (Manually specify)</span>';
                         
-                        // 显示配置状态而不是检测状态
-                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP状态: <span style="color: #44ff44;">✅ 10/10 可用 (ProxyIP域名预设可用)</span>';
-                        if (currentIP) currentIP.innerHTML = '当前使用IP: <span style="color: #44ff44;">✅ 智能就近选择中</span>';
-                        if (regionMatch) regionMatch.innerHTML = '地区匹配: <span style="color: #44ff44;">✅ 同地区IP可用 (1个)</span>';
+                        // Display configuration status instead of detection status
+                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #44ff44;">✅ 10/10 Available (ProxyIP domain name is available by default)</span>';
+                        if (currentIP) currentIP.innerHTML = 'Current IP: <span style="color: #44ff44;">✅ Intelligent nearby selection</span>';
+                        if (regionMatch) regionMatch.innerHTML = 'Region Matching: <span style="color: #44ff44;">✅ IP in the same region is available (1)</span>';
                         
-                        return; // 提前返回，不执行后续的地区匹配逻辑
+                        return; // Return early and do not execute subsequent region matching logic
                     } else if (data.region && regionNames[data.region]) {
                         detectedRegion = data.region;
                     }
                     
-                    geoInfo.innerHTML = '检测方式: <span style="color: #44ff44;">Cloudflare内置检测</span>';
+                    geoInfo.innerHTML = 'Detection method: <span style="color: #44ff44;">Cloudflare built-in detection</span>';
                     
                 } catch (e) {
-                    geoInfo.innerHTML = '检测方式: <span style="color: #ff4444;">检测失败</span>';
+                    geoInfo.innerHTML = 'Detection method: <span style="color: #ff4444;">Detection failure</span>';
                 }
                 
-                regionStatus.innerHTML = 'Worker地区: <span style="color: #44ff44;">✅ ' + regionNames[detectedRegion] + '</span>';
+                regionStatus.innerHTML = 'Worker Area: <span style="color: #44ff44;">✅ ' + regionNames[detectedRegion] + '</span>';
                 
                 
-                // 直接显示配置状态，不再进行检测
+                // Directly display the configuration status without further detection
                 if (backupStatus) {
-                    backupStatus.innerHTML = 'ProxyIP状态: <span style="color: #44ff44;">✅ 10/10 可用 (ProxyIP域名预设可用)</span>';
+                    backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #44ff44;">✅ 10/10 Available (ProxyIP domain name is available by default)</span>';
                 }
                 
                 if (currentIP) {
-                    currentIP.innerHTML = '当前使用IP: <span style="color: #44ff44;">✅ 智能就近选择中</span>';
+                    currentIP.innerHTML = 'Current IP: <span style="color: #44ff44;">✅ Intelligent nearby selection</span>';
                 }
                 
                 if (regionMatch) {
-                    regionMatch.innerHTML = '地区匹配: <span style="color: #44ff44;">✅ 同地区IP可用 (1个)</span>';
+                    regionMatch.innerHTML = 'Region Matching: <span style="color: #44ff44;">✅ IP in the same region is available (1)</span>';
                 }
                 
             } catch (error) {
-                console.error('状态检测失败:', error);
-                document.getElementById('regionStatus').innerHTML = 'Worker地区: <span style="color: #ff4444;">❌ 检测失败</span>';
-                document.getElementById('geoInfo').innerHTML = '地理位置: <span style="color: #ff4444;">❌ 检测失败</span>';
-                document.getElementById('backupStatus').innerHTML = 'ProxyIP状态: <span style="color: #ff4444;">❌ 检测失败</span>';
-                document.getElementById('currentIP').innerHTML = '当前使用IP: <span style="color: #ff4444;">❌ 检测失败</span>';
-                document.getElementById('regionMatch').innerHTML = '地区匹配: <span style="color: #ff4444;">❌ 检测失败</span>';
+                console.error('Status detection failed:', error);
+                document.getElementById('regionStatus').innerHTML = 'Worker Area: <span style="color: #ff4444;">❌ Detection failure</span>';
+                document.getElementById('geoInfo').innerHTML = 'Geographical location: <span style="color: #ff4444;">❌ Detection failure</span>';
+                document.getElementById('backupStatus').innerHTML = 'ProxyIP Status: <span style="color: #ff4444;">❌ Detection failure</span>';
+                document.getElementById('currentIP').innerHTML = 'Current IP: <span style="color: #ff4444;">❌ Detection failure</span>';
+                document.getElementById('regionMatch').innerHTML = 'Region Matching: <span style="color: #ff4444;">❌ Detection failure</span>';
             }
         }
         
@@ -1872,88 +1872,88 @@ async function handleSubscriptionPage(request, user = null) {
                 
                 
                 if (data.detectedRegion) {
-                    alert('API检测结果: ' + data.detectedRegion + '\\n检测时间: ' + data.timestamp);
+                    alert('API test results: ' + data.detectedRegion + '\\n Detection time: ' + data.timestamp);
                 } else {
-                    alert('API检测失败: ' + (data.error || '未知错误'));
+                    alert('API detection failed: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                console.error('API测试失败:', error);
-                alert('API测试失败: ' + error.message);
+                console.error('API test failure:', error);
+                alert('API test failure: ' + error.message);
             }
         }
         
-        // 配置管理相关函数
+        // Configuration management related functions
         async function checkKVStatus() {
             const apiUrl = window.location.pathname + '/api/config';
-            console.log('🔍 调试信息 - 检查KV状态');
-            console.log('请求URL:', apiUrl);
+            console.log('🔍 Debug Information - Check KV Status');
+            console.log('Request URL:', apiUrl);
             
             try {
                 const response = await fetch(apiUrl);
-                console.log('响应状态:', response.status);
-                console.log('响应头:', Object.fromEntries(response.headers.entries()));
+                console.log('Response Status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
                 
                 if (response.status === 503) {
-                    // KV未配置
-                    console.log('❌ KV存储未配置 (503)');
-                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV存储未启用或未配置</span>';
+                    // KV is not configured
+                    console.log('❌ KV storage is not configured (503)');
+                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
                     document.getElementById('configCard').style.display = 'block';
-                    document.getElementById('currentConfig').textContent = 'KV存储未配置，无法使用配置管理功能。\\n\\n请在Cloudflare Workers中:\\n1. 创建KV命名空间\\n2. 绑定环境变量 C\\n3. 重新部署代码';
+                    document.getElementById('currentConfig').textContent = 'KV storage is not configured, so the configuration management function cannot be used.\\n\\n In Cloudflare Workers:\\n1. Creating a KV Namespace\\n2. Binding environment variables C\\n3. Redeploy the code';
                 } else if (response.ok) {
                     const data = await response.json();
-                    console.log('响应数据:', data);
+                    console.log('Response data:', data);
                     console.log('kvEnabled:', data.kvEnabled);
                     
-                    // 检查响应是否包含KV配置信息
+                    // Check whether the response contains KV configuration information
                     if (data && data.kvEnabled === true) {
-                        console.log('✅ KV存储已启用');
-                        document.getElementById('kvStatus').innerHTML = '<span style="color: #44ff44;">✅ KV存储已启用，可以使用配置管理功能</span>';
+                        console.log('✅ KV storage is enabled');
+                        document.getElementById('kvStatus').innerHTML = '<span style="color: #44ff44;">✅ KV storage is enabled and configuration management is available.</span>';
                         document.getElementById('configContent').style.display = 'block';
                         document.getElementById('configCard').style.display = 'block';
                         await loadCurrentConfig();
                     } else {
-                        console.log('❌ KV存储未启用 (响应中kvEnabled不为true)');
-                        document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV存储未启用或未配置</span>';
+                        console.log('❌ KV storage is not enabled (kvEnabled is not true in the response)');
+                        document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
                         document.getElementById('configCard').style.display = 'block';
-                        document.getElementById('currentConfig').textContent = 'KV存储未配置';
+                        document.getElementById('currentConfig').textContent = 'KV storage is not configured';
                     }
                 } else {
-                    console.log('❌ 响应错误:', response.status, response.statusText);
-                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV存储未启用或未配置</span>';
+                    console.log('❌ Response Error:', response.status, response.statusText);
+                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
                     document.getElementById('configCard').style.display = 'block';
-                    document.getElementById('currentConfig').textContent = 'KV存储检测失败 - 状态码: ' + response.status;
+                    document.getElementById('currentConfig').textContent = 'KV storage detection failed - status code: ' + response.status;
                 }
             } catch (error) {
-                console.log('❌ 请求失败:', error);
-                document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV存储未启用或未配置</span>';
+                console.log('❌ Request failed:', error);
+                document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
                 document.getElementById('configCard').style.display = 'block';
-                document.getElementById('currentConfig').textContent = 'KV存储检测失败 - 错误: ' + error.message;
+                document.getElementById('currentConfig').textContent = 'KV store detection failed - Error: ' + error.message;
             }
         }
         
         async function loadCurrentConfig() {
             const apiUrl = window.location.pathname + '/api/config';
-            console.log('📥 调试信息 - 加载配置');
-            console.log('请求URL:', apiUrl);
+            console.log('📥 Debug Information - Load Configuration');
+            console.log('Request URL:', apiUrl);
             
             try {
                 const response = await fetch(apiUrl);
-                console.log('加载响应状态:', response.status);
+                console.log('Loading response status:', response.status);
                 
                 if (response.status === 503) {
-                    console.log('❌ KV存储未配置，无法加载配置');
-                    document.getElementById('currentConfig').textContent = 'KV存储未配置，无法加载配置';
+                    console.log('❌ KV storage is not configured and configuration cannot be loaded');
+                    document.getElementById('currentConfig').textContent = 'KV storage is not configured and configuration cannot be loaded';
                     return;
                 }
                 if (!response.ok) {
-                    console.log('❌ 加载配置失败，状态码:', response.status);
-                    document.getElementById('currentConfig').textContent = '加载配置失败';
+                    console.log('❌ Failed to load configuration, status code:', response.status);
+                    document.getElementById('currentConfig').textContent = 'Failed to load configuration';
                     return;
                 }
                 const config = await response.json();
-                console.log('加载的配置数据:', config);
+                console.log('Loaded configuration data:', config);
                 
-                // 过滤掉内部字段 kvEnabled
+                // Filter out the internal field kvEnabled
                 const displayConfig = {};
                 for (const [key, value] of Object.entries(config)) {
                     if (key !== 'kvEnabled') {
@@ -1961,12 +1961,12 @@ async function handleSubscriptionPage(request, user = null) {
                     }
                 }
                 
-                let configText = '当前配置:\\n';
+                let configText = 'Current Configuration:\\n';
                 if (Object.keys(displayConfig).length === 0) {
-                    configText += '(暂无配置)';
+                    configText += '(No configuration yet)';
                 } else {
                     for (const [key, value] of Object.entries(displayConfig)) {
-                        configText += key + ': ' + (value || '(未设置)') + '\\n';
+                        configText += key + ': ' + (value || '(Not set)') + '\\n';
                     }
                 }
                 
