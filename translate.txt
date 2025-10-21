@@ -15,23 +15,23 @@ let currentWorkerRegion = '';
 let manualWorkerRegion = '';
 let preferredIPsURL = '';
 
-// KV存储相关变量
+// KV Storage related variables
 let kvStore = null;
 let kvConfig = {};
 
 const regionMapping = {
-    'US': ['🇺🇸 美国', 'US', 'United States'],
-    'SG': ['🇸🇬 新加坡', 'SG', 'Singapore'],
-    'JP': ['🇯🇵 日本', 'JP', 'Japan'],
-    'HK': ['🇭🇰 香港', 'HK', 'Hong Kong'],
-    'KR': ['🇰🇷 韩国', 'KR', 'South Korea'],
-    'DE': ['🇩🇪 德国', 'DE', 'Germany'],
-    'SE': ['🇸🇪 瑞典', 'SE', 'Sweden'],
-    'NL': ['🇳🇱 荷兰', 'NL', 'Netherlands'],
-    'FI': ['🇫🇮 芬兰', 'FI', 'Finland'],
-    'GB': ['🇬🇧 英国', 'GB', 'United Kingdom'],
-    'Oracle': ['甲骨文', 'Oracle'],
-    'DigitalOcean': ['数码海', 'DigitalOcean'],
+    'US': ['🇺🇸 USA', 'US', 'United States'],
+    'SG': ['🇸🇬 Singapore', 'SG', 'Singapore'],
+    'JP': ['🇯🇵 Japan', 'JP', 'Japan'],
+    'HK': ['🇭🇰 Hongkong', 'HK', 'Hong Kong'],
+    'KR': ['🇰🇷 South Korea', 'KR', 'South Korea'],
+    'DE': ['🇩🇪 Germany', 'DE', 'Germany'],
+    'SE': ['🇸🇪 Sweden', 'SE', 'Sweden'],
+    'NL': ['🇳🇱 Netherlands', 'NL', 'Netherlands'],
+    'FI': ['🇫🇮 Finland', 'FI', 'Finland'],
+    'GB': ['🇬🇧 U.K.', 'GB', 'United Kingdom'],
+    'Oracle': ['Oracle', 'Oracle'],
+    'DigitalOcean': ['Digital Ocean', 'DigitalOcean'],
     'Vultr': ['Vultr', 'Vultr'],
     'Multacom': ['Multacom', 'Multacom']
 };
@@ -101,14 +101,14 @@ function isValidIP(ip) {
     return false;
 }
 
-// KV存储相关函数
+// KV storage related functions
 async function initKVStore(env) {
     if (env.C) {
         try {
             kvStore = env.C;
             await loadKVConfig();
         } catch (error) {
-            console.error('KV初始化失败，将禁用KV功能:', error);
+            console.error('KV initialization failed，The KV function will be disabled:', error);
             kvStore = null;
         }
     }
@@ -123,7 +123,7 @@ async function loadKVConfig() {
             kvConfig = JSON.parse(configData);
         }
     } catch (error) {
-        console.error('加载KV配置失败:', error);
+        console.error('Failed to load KV configuration:', error);
         kvConfig = {};
     }
 }
@@ -134,12 +134,12 @@ async function saveKVConfig() {
     try {
         await kvStore.put('c', JSON.stringify(kvConfig));
     } catch (error) {
-        console.error('保存KV配置失败:', error);
+        console.error('Failed to save KV configuration:', error);
     }
 }
 
 function getConfigValue(key, defaultValue = '') {
-    // 优先使用KV配置，然后使用环境变量
+    // Use KV configuration first, then use environment variables
     if (kvConfig[key] !== undefined) {
         return kvConfig[key];
     }
@@ -219,16 +219,16 @@ async function getBestBackupIP(workerRegion = '') {
 
 function getNearbyRegions(region) {
     const nearbyMap = {
-        'US': ['SG', 'JP', 'HK', 'KR'], // 美国 -> 亚太地区
-        'SG': ['JP', 'HK', 'KR', 'US'], // 新加坡 -> 亚太地区
-        'JP': ['SG', 'HK', 'KR', 'US'], // 日本 -> 亚太地区
-        'HK': ['SG', 'JP', 'KR', 'US'], // 香港 -> 亚太地区
-        'KR': ['JP', 'HK', 'SG', 'US'], // 韩国 -> 亚太地区
-        'DE': ['NL', 'GB', 'SE', 'FI'], // 德国 -> 欧洲地区
-        'SE': ['DE', 'NL', 'FI', 'GB'], // 瑞典 -> 北欧地区
-        'NL': ['DE', 'GB', 'SE', 'FI'], // 荷兰 -> 西欧地区
-        'FI': ['SE', 'DE', 'NL', 'GB'], // 芬兰 -> 北欧地区
-        'GB': ['DE', 'NL', 'SE', 'FI']  // 英国 -> 西欧地区
+        'US': ['SG', 'JP', 'HK', 'KR'], // USA -> Asia Pacific
+        'SG': ['JP', 'HK', 'KR', 'US'], // Singapore -> Asia Pacific
+        'JP': ['SG', 'HK', 'KR', 'US'], // Japan -> Asia Pacific
+        'HK': ['SG', 'JP', 'KR', 'US'], // Hong Kong -> Asia Pacific
+        'KR': ['JP', 'HK', 'SG', 'US'], // South Korea -> Asia Pacific
+        'DE': ['NL', 'GB', 'SE', 'FI'], // Germany -> Europe
+        'SE': ['DE', 'NL', 'FI', 'GB'], // Sweden -> Nordic region
+        'NL': ['DE', 'GB', 'SE', 'FI'], // Netherlands -> Western Europe
+        'FI': ['SE', 'DE', 'NL', 'GB'], // Finland -> Nordic region
+        'GB': ['DE', 'NL', 'SE', 'FI']  // United Kingdom -> Western Europe
     };
     
     return nearbyMap[region] || [];
@@ -287,7 +287,7 @@ function parseAddressAndPort(input) {
 export default {
 	async fetch(request, env, ctx) {
 		try {
-			// 初始化KV存储
+			// Initialize KV storage
 			await initKVStore(env);
 			
 			authToken = (env.u || env.U || authToken).toLowerCase();
@@ -296,7 +296,7 @@ export default {
 			const customIP = env.p || env.P;
 			let useCustomIP = false;
 			
-			// 检查是否手动指定了wk地区 (优先使用KV配置)
+			// Check if the wk region is manually specified (KV configuration is preferred)
 			const manualRegion = getConfigValue('wk', env.wk || env.WK);
 			if (manualRegion && manualRegion.trim()) {
 				manualWorkerRegion = manualRegion.trim().toUpperCase();
@@ -338,7 +338,7 @@ export default {
 				}
 			}
 
-			// 优先使用KV配置，然后使用环境变量
+			// Use KV configuration first, then use environment variables
 			const customPreferred = getConfigValue('yx', env.yx || env.YX);
 			if (customPreferred) {
 				try {
@@ -347,7 +347,7 @@ export default {
 					customPreferredDomains = [];
 					
 					preferredList.forEach(item => {
-						// 检查是否包含节点名称 (#)
+						// Check if the node name is included (#)
 						let nodeName = '';
 						let addressPart = item;
 						
@@ -359,9 +359,9 @@ export default {
 						
 						const { address, port } = parseAddressAndPort(addressPart);
 						
-						// 如果没有设置节点名称，使用默认格式
+						// If no node name is set, the default format is used
 						if (!nodeName) {
-							nodeName = '自定义优选-' + address + (port ? ':' + port : '');
+							nodeName = 'Customized selection-' + address + (port ? ':' + port : '');
 						}
 						
 						if (isValidIP(address)) {
@@ -389,7 +389,7 @@ export default {
 				enableSocksDowngrade = true;
 			}
 
-			// 优先使用KV配置，然后使用环境变量
+			// Use KV configuration first, then use environment variables
 			const dkbyControl = getConfigValue('dkby', env.dkby || env.DKBY);
 			if (dkbyControl && dkbyControl.toLowerCase() === 'yes') {
 				disableNonTLS = true;
@@ -400,7 +400,7 @@ export default {
 				disablePreferred = true;
 			}
 
-			// 优先使用KV配置，然后使用环境变量，如果都没有则使用默认URL
+			// Use KV configuration first, then use environment variables, if neither is used, use the default URL
 			preferredIPsURL = getConfigValue('yxURL', env.yxURL || env.YXURL) || 'https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt';
 
 			const url = new URL(request.url);
@@ -409,10 +409,10 @@ export default {
 				return await handleWsRequest(request);
 			}
 			
-			// 配置管理API路由（支持GET和POST）
+			// Configuration management API routing (supports GET and POST）
 			if (url.pathname.includes('/api/config')) {
 				const pathParts = url.pathname.split('/').filter(p => p);
-				// 查找UUID - 应该在 api 之前
+				// Find UUID - should come before api
 				const apiIndex = pathParts.indexOf('api');
 				if (apiIndex > 0) {
 					const user = pathParts[apiIndex - 1];
@@ -425,31 +425,31 @@ export default {
 						});
 					}
 				}
-				// 如果路径格式不正确，返回JSON错误
-				return new Response(JSON.stringify({ error: '无效的API路径' }), { 
+				// If the path format is incorrect, a JSON error is returned.
+				return new Response(JSON.stringify({ error: 'Invalid API path' }), { 
 					status: 404,
 					headers: { 'Content-Type': 'application/json' }
 				});
 			}
 			
-			// 优选IP管理API路由
+			// Optimal IP management API routing
 			if (url.pathname.includes('/api/preferred-ips')) {
 				const pathParts = url.pathname.split('/').filter(p => p);
-				// 查找UUID - 应该在 api 之前
+				// Find UUID - should come before api
 				const apiIndex = pathParts.indexOf('api');
 				if (apiIndex > 0) {
 					const user = pathParts[apiIndex - 1];
 					if (isValidFormat(user) && user === authToken) {
 						return await handlePreferredIPsAPI(request);
 					} else if (isValidFormat(user)) {
-						return new Response(JSON.stringify({ error: 'UUID错误' }), { 
+						return new Response(JSON.stringify({ error: 'UUID error' }), { 
 							status: 403,
 							headers: { 'Content-Type': 'application/json' }
 						});
 					}
 				}
-				// 如果路径格式不正确，返回JSON错误
-				return new Response(JSON.stringify({ error: '无效的API路径' }), { 
+				// If the path format is incorrect, a JSON error is returned.
+				return new Response(JSON.stringify({ error: 'Invalid API path' }), { 
 					status: 404,
 					headers: { 'Content-Type': 'application/json' }
 				});
@@ -519,13 +519,14 @@ export default {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLUB GRATIS</title>
+    <title>终端</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: "Courier New", monospace;
             background: #000; color: #00ff00; min-height: 100vh;
             overflow-x: hidden; position: relative;
+            display: flex; justify-content: center; align-items: center;
         }
         .matrix-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -577,141 +578,73 @@ export default {
             animation-duration: 20s;
             animation-delay: -8s;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
-        .header { text-align: center; margin-bottom: 40px; }
-        .title {
-            font-size: 3.5rem; font-weight: bold;
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00;
-            margin-bottom: 10px;
-            animation: matrix-glow 1.5s ease-in-out infinite alternate, matrix-pulse 3s ease-in-out infinite;
-            position: relative;
-            background: linear-gradient(45deg, #00ff00, #00aa00, #00ff00);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        @keyframes matrix-glow {
-            from { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00; }
-            to { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00; }
-        }
-        @keyframes matrix-pulse {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        .subtitle { color: #00aa00; margin-bottom: 30px; font-size: 1.2rem; }
-        .card {
-            background: rgba(0, 20, 0, 0.9);
-            border: 2px solid #00ff00;
-            border-radius: 0; padding: 30px; margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.1);
-            position: relative;
-            backdrop-filter: blur(10px);
-            animation: card-glow 4s ease-in-out infinite;
-        }
-        @keyframes card-glow {
-            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.7), inset 0 0 30px rgba(0, 255, 0, 0.2); }
-        }
-        .card::before {
-            content: ""; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent 49%, #00ff00 50%, transparent 51%);
-            opacity: 0.2; pointer-events: none;
-            animation: scan-line 3s linear infinite;
-        }
-        @keyframes scan-line {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        .card-title {
-            font-size: 1.8rem; margin-bottom: 20px;
-            color: #00ff00; text-shadow: 0 0 5px #00ff00;
-        }
-        .client-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px; margin: 20px 0;
-        }
-        .client-btn {
-            background: rgba(0, 20, 0, 0.8);
-            border: 2px solid #00ff00;
-            padding: 15px 20px; color: #00ff00;
-            font-family: "Courier New", monospace; font-weight: bold;
-            cursor: pointer; transition: all 0.4s ease;
-            text-align: center; position: relative;
-            overflow: hidden;
-            text-shadow: 0 0 5px #00ff00;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-        .client-btn::before {
-            content: ""; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.4), transparent);
-            transition: left 0.6s ease;
-        }
-        .client-btn::after {
-            content: ""; position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent 30%, rgba(0,255,0,0.1) 50%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .client-btn:hover::before { left: 100%; }
-        .client-btn:hover::after { opacity: 1; }
-        .client-btn:hover {
-            background: rgba(0, 255, 0, 0.3);
-            box-shadow: 0 0 25px #00ff00, 0 0 35px rgba(0, 255, 0, 0.5);
-            transform: translateY(-3px) scale(1.05);
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-        }
-        .generate-btn {
-            background: rgba(0, 255, 0, 0.15);
-            border: 2px solid #00ff00; padding: 15px 30px;
-            color: #00ff00; font-family: "Courier New", monospace;
-            font-weight: bold; cursor: pointer;
-            transition: all 0.4s ease; margin-right: 15px;
-            text-shadow: 0 0 8px #00ff00;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        .generate-btn::before {
-            content: ""; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.5), transparent);
-            transition: left 0.8s ease;
-        }
-        .generate-btn:hover::before { left: 100%; }
-        .generate-btn:hover {
-            background: rgba(0, 255, 0, 0.4);
-            box-shadow: 0 0 30px #00ff00, 0 0 40px rgba(0, 255, 0, 0.6);
-            transform: translateY(-4px) scale(1.08);
-            text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00;
-        }
-        .subscription-url {
+        .terminal {
+            width: 90%; max-width: 800px; height: 500px;
             background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ff00; padding: 15px;
-            word-break: break-all; font-family: "Courier New", monospace;
-            color: #00ff00; margin-top: 20px; display: none;
-            box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.3);
-            border-radius: 5px;
-            animation: url-glow 2s ease-in-out infinite alternate;
-            position: relative;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative; z-index: 1;
             overflow: hidden;
         }
-        @keyframes url-glow {
-            from { box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.4), 0 0 20px rgba(0, 255, 0, 0.3); }
-            to { box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.6), 0 0 30px rgba(0, 255, 0, 0.5); }
+        .terminal-header {
+            background: rgba(0, 20, 0, 0.8);
+            padding: 10px 15px;
+            border-bottom: 1px solid #00ff00;
+            display: flex; align-items: center;
         }
-        .subscription-url::before {
-            content: ""; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.1), transparent);
-            animation: url-scan 3s linear infinite;
+        .terminal-buttons {
+            display: flex; gap: 8px;
         }
-        @keyframes url-scan {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        .terminal-button {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #ff5f57; border: none;
+        }
+        .terminal-button:nth-child(2) { background: #ffbd2e; }
+        .terminal-button:nth-child(3) { background: #28ca42; }
+        .terminal-title {
+            margin-left: 15px; color: #00ff00;
+            font-size: 14px; font-weight: bold;
+        }
+        .terminal-body {
+            padding: 20px; height: calc(100% - 50px);
+            overflow-y: auto; font-size: 14px;
+            line-height: 1.4;
+        }
+        .terminal-line {
+            margin-bottom: 8px; display: flex; align-items: center;
+        }
+        .terminal-prompt {
+            color: #00ff00; margin-right: 10px;
+            font-weight: bold;
+        }
+        .terminal-input {
+            background: transparent; border: none; outline: none;
+            color: #00ff00; font-family: "Courier New", monospace;
+            font-size: 14px; flex: 1;
+            caret-color: #00ff00;
+        }
+        .terminal-input::placeholder {
+            color: #00aa00; opacity: 0.7;
+        }
+        .terminal-cursor {
+            display: inline-block; width: 8px; height: 16px;
+            background: #00ff00; animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .terminal-output {
+            color: #00aa00; margin: 5px 0;
+        }
+        .terminal-error {
+            color: #ff4444; margin: 5px 0;
+        }
+        .terminal-success {
+            color: #44ff44; margin: 5px 0;
         }
         .matrix-text {
             position: fixed; top: 20px; right: 20px;
@@ -729,187 +662,37 @@ export default {
     <div class="matrix-bg"></div>
     <div class="matrix-rain"></div>
     <div class="matrix-code-rain" id="matrixCodeRain"></div>
-    <div class="matrix-text">CLUB GRATIS v1.1</div>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">CLUB GRATIS</h1>
-            <p class="subtitle">Multi-client support • Intelligent optimization • One-click generation</p>
-        </div>
-        <div class="card">
-            <h2 class="card-title">[ Select Client ]</h2>
-            <div class="client-grid">
-                <button class="client-btn" onclick="generateClientLink(atob('Y2xhc2g='))">CLASH</button>
-                <button class="client-btn" onclick="generateClientLink(atob('c3VyZ2U='))">SURGE</button>
-                <button class="client-btn" onclick="generateClientLink(atob('c2luZ2JveA=='))">SING-BOX</button>
-                <button class="client-btn" onclick="generateClientLink(atob('bG9vbg=='))">LOON</button>
-                <button class="client-btn" onclick="generateClientLink(atob('djJyYXk='))">V2RAY</button>
+    <div class="matrix-text">终端</div>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-buttons">
+                <div class="terminal-button"></div>
+                <div class="terminal-button"></div>
+                <div class="terminal-button"></div>
             </div>
-            <div class="subscription-url" id="clientSubscriptionUrl"></div>
+            <div class="terminal-title">终端</div>
         </div>
-        <div class="card">
-            <h2 class="card-title">[ Quick Access ]</h2>
-            <button class="generate-btn" onclick="getBase64Subscription()">Get subscription link</button>
-            <div class="subscription-url" id="base64SubscriptionUrl"></div>
-        </div>
-        <div class="card">
-            <h2 class="card-title">[ System Status ]</h2>
-            <div id="systemStatus" style="margin: 20px 0; padding: 15px; background: rgba(0, 20, 0, 0.8); border: 2px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.1); position: relative; overflow: hidden;">
-                <div style="color: #00ff00; margin-bottom: 15px; font-weight: bold; text-shadow: 0 0 5px #00ff00;">[ System testing... ]</div>
-                <div id="regionStatus" style="margin: 8px 0; color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 3px #00ff00;">Worker Area: Testing...</div>
-                <div id="geoInfo" style="margin: 8px 0; color: #00aa00; font-family: 'Courier New', monospace; font-size: 0.9rem; text-shadow: 0 0 3px #00aa00;">Detection method: Testing...</div>
-                <div id="backupStatus" style="margin: 8px 0; color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 3px #00ff00;">ProxyIP Status: Testing...</div>
-                <div id="currentIP" style="margin: 8px 0; color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 3px #00ff00;">Current IP: Testing...</div>
-                <div id="regionMatch" style="margin: 8px 0; color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 3px #00ff00;">Region Matching: Testing...</div>
-                <div id="selectionLogic" style="margin: 8px 0; color: #00aa00; font-family: 'Courier New', monospace; font-size: 0.9rem; text-shadow: 0 0 3px #00aa00;">Selection Logic: Same region → Neighboring areas → Other regions</div>
+        <div class="terminal-body" id="terminalBody">
+            <div class="terminal-line">
+                <span class="terminal-prompt">root:~$</span>
+                <span class="terminal-output">恭喜你来到这</span>
             </div>
-        </div>
-        <div class="card" id="configCard" style="display: none;">
-            <h2 class="card-title">[ Configuration Management ]</h2>
-            <div id="kvStatus" style="margin-bottom: 20px; padding: 10px; background: rgba(0, 20, 0, 0.8); border: 1px solid #00ff00; color: #00ff00;">
-                Checking KV status...
+            <div class="terminal-line">
+                <span class="terminal-prompt">root:~$</span>
+                <span class="terminal-output">请输入你U变量的值</span>
             </div>
-            <div id="configContent" style="display: none;">
-                <form id="regionForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">designated areas (wk):</label>
-                        <select id="wkRegion" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">Automatic detection</option>
-                            <option value="US">🇺🇸 美国</option>
-                            <option value="SG">🇸🇬 新加坡</option>
-                            <option value="JP">🇯🇵 日本</option>
-                            <option value="HK">🇭🇰 香港</option>
-                            <option value="KR">🇰🇷 韩国</option>
-                            <option value="DE">🇩🇪 德国</option>
-                            <option value="SE">🇸🇪 瑞典</option>
-                            <option value="NL">🇳🇱 荷兰</option>
-                            <option value="FI">🇫🇮 芬兰</option>
-                            <option value="GB">🇬🇧 英国</option>
-                        </select>
-                    </div>
-                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Save region configuration</button>
-                </form>
-                <form id="otherConfigForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Custom ProxyIP (p):</label>
-                        <input type="text" id="customIP" placeholder="例如: 1.2.3.4:443" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                        <small style="color: #00aa00; font-size: 0.85rem;">Customize Proxy IP address and port</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Preferred IP List (yx):</label>
-                        <input type="text" id="preferredIPs" placeholder="例如: 1.2.3.4:443#香港节点,5.6.7.8:80#美国节点,example.com:8443#新加坡节点" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                        <small style="color: #00aa00; font-size: 0.85rem;">Format: IP:port#Node Name or IP:port (none#Use the default name)。Support multiple，Separate with commas</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Preferred IP source URL (yxURL):</label>
-                        <input type="text" id="preferredIPsURL" placeholder="默认: https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                        <small style="color: #00aa00; font-size: 0.85rem;">Customize the preferred IP list source URL，Leave blank to use the default address</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">SOCKS5 Configuration (s):</label>
-                        <input type="text" id="socksConfig" placeholder="例如: user:pass@host:port 或 host:port" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                        <small style="color: #00aa00; font-size: 0.85rem;">SOCKS5 proxy address，Used to forward all outbound traffic</small>
-                    </div>
-                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Save Configuration</button>
-                </form>
-                
-                <h3 style="color: #00ff00; margin: 20px 0 15px 0; font-size: 1.2rem;">Advanced Control</h3>
-                <form id="advancedConfigForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Region Matching (rm):</label>
-                        <select id="regionMatching" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">default（Enable Region Matching）</option>
-                            <option value="no">Turn off regional matching</option>
-                        </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Off", no region smart matching is performed</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Degradation Control (qj):</label>
-                        <select id="downgradeControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">default（Do not enable downgrade）</option>
-                            <option value="no">Enable degraded mode</option>
-                        </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Enable": CF direct connection fails → SOCKS5 connection → fallback address</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">TLS Control (dkby):</label>
-                        <select id="portControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">default（Keep all nodes）</option>
-                            <option value="yes">TLS-only nodes</option>
-                        </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "TLS nodes only", only nodes with TLS will be generated, and non-TLS nodes will not be generated.（Such as port 80）</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; color: #00ff00; font-weight: bold; text-shadow: 0 0 3px #00ff00;">Optimal control (yxby):</label>
-                        <select id="preferredControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff00; color: #00ff00; font-family: 'Courier New', monospace; font-size: 14px;">
-                            <option value="">default（Enable Preference）</option>
-                            <option value="yes">Close Preferences</option>
-                        </select>
-                        <small style="color: #00aa00; font-size: 0.85rem;">When set to "Off Preferred", only the native address is used, and no preferred IP and domain name nodes are generated.</small>
-                    </div>
-                    <button type="submit" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Save Advanced Configuration</button>
-                </form>
-                <div id="currentConfig" style="background: rgba(0, 0, 0, 0.9); border: 1px solid #00ff00; padding: 15px; margin: 10px 0; font-family: 'Courier New', monospace; color: #00ff00;">
-                    loading...
-                </div>
-                <button onclick="loadCurrentConfig()" style="background: rgba(0, 255, 0, 0.15); border: 2px solid #00ff00; padding: 12px 24px; color: #00ff00; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: 0 0 8px #00ff00; transition: all 0.4s ease;">Refresh Configuration</button>
-                <button onclick="resetAllConfig()" style="background: rgba(255, 0, 0, 0.15); border: 2px solid #ff0000; padding: 12px 24px; color: #ff0000; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: 0 0 8px #ff0000; transition: all 0.4s ease;">Reset Configuration</button>
+            <div class="terminal-line">
+                <span class="terminal-prompt">root:~$</span>
+                <span class="terminal-output">命令: connect [UUID]</span>
             </div>
-            <div id="statusMessage" style="display: none; padding: 10px; margin: 10px 0; border: 1px solid #00ff00; background: rgba(0, 20, 0, 0.8); color: #00ff00; text-shadow: 0 0 5px #00ff00;"></div>
-        </div>
-        
-        <div class="card">
-            <h2 class="card-title">[ Related links ]</h2>
-            <div style="text-align: center; margin: 20px 0;">
-                <a href="https://github.com/MarinaAqua/cfnewsnippet" target="_blank" style="color: #00ff00; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: 0 0 5px #00ff00;">GitHub Project</a>
-                <a href="https://www.youtube.com/@mrkingsofficiall" target="_blank" style="color: #00ff00; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: 0 0 5px #00ff00;">YouTube @mrkingsofficiall</a>
+            <div class="terminal-line">
+                <span class="terminal-prompt">root:~$</span>
+                <input type="text" class="terminal-input" id="uuidInput" placeholder="输入U变量的内容并且回车..." autofocus>
+                <span class="terminal-cursor"></span>
             </div>
         </div>
     </div>
     <script>
-        function generateClientLink(clientType) {
-            var currentUrl = window.location.href;
-            var subscriptionUrl = currentUrl + "/sub";
-            
-            if (clientType === atob('djJyYXk=')) {
-                document.getElementById("clientSubscriptionUrl").textContent = subscriptionUrl;
-                document.getElementById("clientSubscriptionUrl").style.display = "block";
-                navigator.clipboard.writeText(subscriptionUrl).then(function() {
-                    alert("V2Ray 订阅链接已复制");
-                });
-            } else {
-                var encodedUrl = encodeURIComponent(subscriptionUrl);
-                var apiUrl = "https://s.jhb.edu.kg/sub?target=" + clientType + "&url=" + encodedUrl + "&insert=false";
-                document.getElementById("clientSubscriptionUrl").textContent = apiUrl;
-                document.getElementById("clientSubscriptionUrl").style.display = "block";
-                navigator.clipboard.writeText(apiUrl).then(function() {
-                    var displayName = clientType.toUpperCase();
-                    if (clientType === atob('c3VyZ2U=')) displayName = 'SURGE';
-                    if (clientType === atob('c2luZ2JveA==')) displayName = 'SING-BOX';
-                    alert(displayName + " 订阅链接已复制");
-                });
-            }
-        }
-        function getBase64Subscription() {
-            var currentUrl = window.location.href;
-            var subscriptionUrl = currentUrl + "/sub";
-            
-            fetch(subscriptionUrl)
-                .then(function(response) {
-                    return response.text();
-                })
-                .then(function(base64Content) {
-                    document.getElementById("base64SubscriptionUrl").textContent = base64Content;
-                    document.getElementById("base64SubscriptionUrl").style.display = "block";
-                    navigator.clipboard.writeText(base64Content).then(function() {
-                        alert("Base64订阅内容已复制");
-                    });
-                })
-                .catch(function(error) {
-                    console.error("获取订阅失败:", error);
-                    alert("获取订阅失败，请重试");
-                });
-        }
-        
         function createMatrixRain() {
             const matrixContainer = document.getElementById('matrixCodeRain');
             const matrixChars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -952,351 +735,64 @@ export default {
             }, 100);
         }
         
-        async function checkSystemStatus() {
-            try {
-                const cfStatus = document.getElementById('cfStatus');
-                const regionStatus = document.getElementById('regionStatus');
-                const geoInfo = document.getElementById('geoInfo');
-                const backupStatus = document.getElementById('backupStatus');
-                const currentIP = document.getElementById('currentIP');
-                const regionMatch = document.getElementById('regionMatch');
-                
-                const regionNames = {
-                    'US': '🇺🇸 美国', 'SG': '🇸🇬 新加坡', 'JP': '🇯🇵 日本', 'HK': '🇭🇰 香港',
-                    'KR': '🇰🇷 韩国', 'DE': '🇩🇪 德国', 'SE': '🇸🇪 瑞典', 'NL': '🇳🇱 荷兰',
-                    'FI': '🇫🇮 芬兰', 'GB': '🇬🇧 英国'
-                };
-                
-                let detectedRegion = 'US'; // 默认值
-                let isCustomIPMode = false;
-                let isManualRegionMode = false;
-                try {
-                    const response = await fetch('/region');
-                    const data = await response.json();
-                    
-                    
-                    if (data.region === 'CUSTOM') {
-                        isCustomIPMode = true;
-                        detectedRegion = 'CUSTOM';
-                        
-                        geoInfo.innerHTML = 'Detection method: <span style="color: #ffaa00;">Custom IP mode</span>';
-                        regionStatus.innerHTML = 'Worker Area: <span style="color: #ffaa00;">🔧 Custom IP mode</span>';
-                        
-                        // 显示自定义IP配置状态
-                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #44ff44;">✅ Custom IP configured</span>';
-                        if (currentIP) currentIP.innerHTML = 'Current IP: <span style="color: #44ff44;">✅ Custom IP mode</span>';
-                        if (regionMatch) regionMatch.innerHTML = 'Region Matching: <span style="color: #ffaa00;">⚠️ Custom IP mode</span>';
-                        
-                        return; // 提前返回，不执行后续的地区匹配逻辑
-                    } else if (data.detectionMethod === 'Manually specify region') {
-                        isManualRegionMode = true;
-                        detectedRegion = data.region;
-                        
-                        geoInfo.innerHTML = 'Detection method: <span style="color: #44aa44;">Manually specify region</span>';
-                        regionStatus.innerHTML = 'Worker Area: <span style="color: #44ff44;">🎯 ' + regionNames[detectedRegion] + ' (Manually specify)</span>';
-                        
-                        // 显示配置状态而不是检测状态
-                        if (backupStatus) backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #44ff44;">✅ 10/10 available (ProxyIP domain name is available by default)</span>';
-                        if (currentIP) currentIP.innerHTML = 'Current IP: <span style="color: #44ff44;">✅ Intelligent nearby selection</span>';
-                        if (regionMatch) regionMatch.innerHTML = 'Region Matching: <span style="color: #44ff44;">✅ IP in the same region is available (1个)</span>';
-                        
-                        return; // 提前返回，不执行后续的地区匹配逻辑
-                    } else if (data.region && regionNames[data.region]) {
-                        detectedRegion = data.region;
-                    }
-                    
-                    geoInfo.innerHTML = 'Detection method: <span style="color: #44ff44;">Cloudflare built-in detection</span>';
-                    
-                } catch (e) {
-                    geoInfo.innerHTML = 'Detection method: <span style="color: #ff4444;">Detection failure</span>';
-                }
-                
-                regionStatus.innerHTML = 'Worker Area: <span style="color: #44ff44;">✅ ' + regionNames[detectedRegion] + '</span>';
-                
-                
-                // 直接显示配置状态，不再进行检测
-                if (backupStatus) {
-                    backupStatus.innerHTML = 'ProxyIP Status: <span style="color: #44ff44;">✅ 10/10 available (ProxyIP domain name is available by default)</span>';
-                }
-                
-                if (currentIP) {
-                    currentIP.innerHTML = 'Current IP: <span style="color: #44ff44;">✅ Intelligent nearby selection</span>';
-                }
-                
-                if (regionMatch) {
-                    regionMatch.innerHTML = 'Region Matching: <span style="color: #44ff44;">✅ IP in the same region is available (1个)</span>';
-                }
-                
-            } catch (error) {
-                console.error('Status detection failed:', error);
-                document.getElementById('regionStatus').innerHTML = 'Worker Area: <span style="color: #ff4444;">❌ Detection failure</span>';
-                document.getElementById('geoInfo').innerHTML = 'Geographical location: <span style="color: #ff4444;">❌ Detection failure</span>';
-                document.getElementById('backupStatus').innerHTML = 'ProxyIP Status: <span style="color: #ff4444;">❌ Detection failure</span>';
-                document.getElementById('currentIP').innerHTML = 'Current IP: <span style="color: #ff4444;">❌ Detection failed</span>';
-                document.getElementById('regionMatch').innerHTML = 'Region Matching: <span style="color: #ff4444;">❌ Detection failure</span>';
-            }
+        function isValidUUID(uuid) {
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            return uuidRegex.test(uuid);
         }
         
-        async function testAPI() {
-            try {
-                const response = await fetch('/test-api');
-                const data = await response.json();
-                
-                
-                if (data.detectedRegion) {
-                    alert('API检测结果: ' + data.detectedRegion + '\\n检测时间: ' + data.timestamp);
-                } else {
-                    alert('API检测失败: ' + (data.error || '未知错误'));
-                }
-            } catch (error) {
-                console.error('API测试失败:', error);
-                alert('API测试失败: ' + error.message);
-            }
-        }
-        
-        // 配置管理相关函数
-        async function checkKVStatus() {
-            const apiUrl = window.location.pathname + '/api/config';
-            console.log('🔍 调试信息 - 检查KV状态');
-            console.log('请求URL:', apiUrl);
+        function addTerminalLine(content, type = 'output') {
+            const terminalBody = document.getElementById('terminalBody');
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
             
-            try {
-                const response = await fetch(apiUrl);
-                console.log('响应状态:', response.status);
-                console.log('响应头:', Object.fromEntries(response.headers.entries()));
-                
-                if (response.status === 503) {
-                    // KV未配置
-                    console.log('❌ KV存储未配置 (503)');
-                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
-                    document.getElementById('configCard').style.display = 'block';
-                    document.getElementById('currentConfig').textContent = 'KV存储未配置，无法使用配置管理功能。\\n\\n请在Cloudflare Workers中:\\n1. 创建KV命名空间\\n2. 绑定环境变量 C\\n3. 重新部署代码';
-                } else if (response.ok) {
-                    const data = await response.json();
-                    console.log('响应数据:', data);
-                    console.log('kvEnabled:', data.kvEnabled);
-                    
-                    // 检查响应是否包含KV配置信息
-                    if (data && data.kvEnabled === true) {
-                        console.log('✅ KV存储已启用');
-                        document.getElementById('kvStatus').innerHTML = '<span style="color: #44ff44;">✅ KV storage is enabled and configuration management is available.</span>';
-                        document.getElementById('configContent').style.display = 'block';
-                        document.getElementById('configCard').style.display = 'block';
-                        await loadCurrentConfig();
-                    } else {
-                        console.log('❌ KV存储未启用 (响应中kvEnabled不为true)');
-                        document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
-                        document.getElementById('configCard').style.display = 'block';
-                        document.getElementById('currentConfig').textContent = 'KV存储未配置';
-                    }
-                } else {
-                    console.log('❌ 响应错误:', response.status, response.statusText);
-                    document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
-                    document.getElementById('configCard').style.display = 'block';
-                    document.getElementById('currentConfig').textContent = 'KV存储检测失败 - 状态码: ' + response.status;
-                }
-            } catch (error) {
-                console.log('❌ 请求失败:', error);
-                document.getElementById('kvStatus').innerHTML = '<span style="color: #ffaa00;">⚠️ KV storage is not enabled or configured</span>';
-                document.getElementById('configCard').style.display = 'block';
-                document.getElementById('currentConfig').textContent = 'KV存储检测失败 - 错误: ' + error.message;
-            }
-        }
-        
-        async function loadCurrentConfig() {
-            const apiUrl = window.location.pathname + '/api/config';
-            console.log('📥 调试信息 - 加载配置');
-            console.log('请求URL:', apiUrl);
+            const prompt = document.createElement('span');
+            prompt.className = 'terminal-prompt';
+            prompt.textContent = 'root:~$';
             
-            try {
-                const response = await fetch(apiUrl);
-                console.log('加载响应状态:', response.status);
-                
-                if (response.status === 503) {
-                    console.log('❌ KV存储未配置，无法加载配置');
-                    document.getElementById('currentConfig').textContent = 'KV存储未配置，无法加载配置';
-                    return;
-                }
-                if (!response.ok) {
-                    console.log('❌ 加载配置失败，状态码:', response.status);
-                    document.getElementById('currentConfig').textContent = '加载配置失败';
-                    return;
-                }
-                const config = await response.json();
-                console.log('加载的配置数据:', config);
-                
-                // 过滤掉内部字段 kvEnabled
-                const displayConfig = {};
-                for (const [key, value] of Object.entries(config)) {
-                    if (key !== 'kvEnabled') {
-                        displayConfig[key] = value;
-                    }
-                }
-                
-                let configText = '当前配置:\\n';
-                if (Object.keys(displayConfig).length === 0) {
-                    configText += '(暂无配置)';
-                } else {
-                    for (const [key, value] of Object.entries(displayConfig)) {
-                        configText += key + ': ' + (value || '(未设置)') + '\\n';
-                    }
-                }
-                
-                document.getElementById('currentConfig').textContent = configText;
-                
-                // 更新表单值
-                document.getElementById('wkRegion').value = config.wk || '';
-                document.getElementById('customIP').value = config.p || '';
-                document.getElementById('preferredIPs').value = config.yx || '';
-                document.getElementById('preferredIPsURL').value = config.yxURL || '';
-                document.getElementById('socksConfig').value = config.s || '';
-                document.getElementById('regionMatching').value = config.rm || '';
-                document.getElementById('downgradeControl').value = config.qj || '';
-                document.getElementById('portControl').value = config.dkby || '';
-                document.getElementById('preferredControl').value = config.yxby || '';
-                
-            } catch (error) {
-                document.getElementById('currentConfig').textContent = '加载配置失败: ' + error.message;
-            }
-        }
-        
-        async function saveConfig(configData) {
-            const apiUrl = window.location.pathname + '/api/config';
-            console.log('💾 调试信息 - 保存配置');
-            console.log('请求URL:', apiUrl);
-            console.log('配置数据:', configData);
+            const output = document.createElement('span');
+            output.className = 'terminal-' + type;
+            output.textContent = content;
             
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(configData)
-                });
-                
-                console.log('保存响应状态:', response.status);
-                console.log('保存响应头:', Object.fromEntries(response.headers.entries()));
-                
-                if (response.status === 503) {
-                    console.log('❌ KV存储未配置，无法保存');
-                    showStatus('KV存储未配置，无法保存配置。请先在Cloudflare Workers中配置KV存储。', 'error');
-                    return;
-                }
-                
-                const result = await response.json();
-                console.log('保存响应数据:', result);
-                
-                showStatus(result.message, result.success ? 'success' : 'error');
-                
-                if (result.success) {
-                    console.log('✅ 保存成功，重新加载配置');
-                    await loadCurrentConfig();
-                    // 保存成功后刷新页面以更新系统状态
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    console.log('❌ 保存失败:', result.message);
-                }
-            } catch (error) {
-                console.log('❌ 保存请求失败:', error);
-                showStatus('保存失败: ' + error.message, 'error');
-            }
-        }
-        
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
-            statusDiv.style.display = 'block';
-            statusDiv.style.color = type === 'success' ? '#00ff00' : '#ff0000';
-            statusDiv.style.borderColor = type === 'success' ? '#00ff00' : '#ff0000';
+            line.appendChild(prompt);
+            line.appendChild(output);
+            terminalBody.appendChild(line);
             
-            setTimeout(function() {
-                statusDiv.style.display = 'none';
-            }, 3000);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
         }
         
-        async function resetAllConfig() {
-            if (confirm('确定要重置所有配置吗？这将清空所有KV配置，恢复为环境变量设置。')) {
-                try {
-                    const response = await fetch(window.location.pathname + '/api/config', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            wk: '',
-                            p: '',
-                            yx: '',
-                            yxURL: '',
-                            s: '',
-                            rm: '',
-                            qj: '',
-                            dkby: '',
-                            yxby: ''
-                        })
-                    });
-                    
-                    if (response.status === 503) {
-                        showStatus('KV存储未配置，无法重置配置。', 'error');
-                        return;
-                    }
-                    
-                    const result = await response.json();
-                    showStatus(result.message || '配置已重置', result.success ? 'success' : 'error');
-                    
-                    if (result.success) {
-                        await loadCurrentConfig();
-                        // 刷新页面以更新系统状态
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 1500);
-                    }
-                } catch (error) {
-                    showStatus('重置失败: ' + error.message, 'error');
+        function handleUUIDInput() {
+            const input = document.getElementById('uuidInput');
+            const uuid = input.value.trim();
+            
+            if (uuid) {
+                addTerminalLine('connect ' + uuid, 'output');
+                
+                if (isValidUUID(uuid)) {
+                    addTerminalLine('正在入侵...', 'output');
+                    setTimeout(() => {
+                        addTerminalLine('连接成功！返回结果...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/' + uuid;
+                        }, 1000);
+                    }, 500);
+                } else {
+                    addTerminalLine('错误: 无效的UUID格式', 'error');
+                    addTerminalLine('请重新输入有效的UUID', 'output');
                 }
+                
+                input.value = '';
             }
         }
         
         document.addEventListener('DOMContentLoaded', function() {
             createMatrixRain();
-            checkSystemStatus();
-            checkKVStatus();
             
-            // 绑定表单事件
-            const regionForm = document.getElementById('regionForm');
-            if (regionForm) {
-                regionForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    const wkRegion = document.getElementById('wkRegion').value;
-                    await saveConfig({ wk: wkRegion });
-                });
-            }
-            
-            const otherConfigForm = document.getElementById('otherConfigForm');
-            if (otherConfigForm) {
-                otherConfigForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    const configData = {
-                        p: document.getElementById('customIP').value,
-                        yx: document.getElementById('preferredIPs').value,
-                        yxURL: document.getElementById('preferredIPsURL').value,
-                        s: document.getElementById('socksConfig').value
-                    };
-                    await saveConfig(configData);
-                });
-            }
-            
-            const advancedConfigForm = document.getElementById('advancedConfigForm');
-            if (advancedConfigForm) {
-                advancedConfigForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    const configData = {
-                        rm: document.getElementById('regionMatching').value,
-                        qj: document.getElementById('downgradeControl').value,
-                        dkby: document.getElementById('portControl').value,
-                        yxby: document.getElementById('preferredControl').value
-                    };
-                    await saveConfig(configData);
-                });
-            }
+            const input = document.getElementById('uuidInput');
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleUUIDInput();
+                }
+            });
         });
     </script>
 </body>
@@ -1486,6 +982,10 @@ async function handleSubscriptionRequest(request, user, url = null) {
 }
 
 function generateLinksFromSource(list, user, workerDomain) {
+    // Cloudflare支持的端口
+    const CF_HTTP_PORTS = [80, 8080, 8880, 2052, 2082, 2086, 2095];
+    const CF_HTTPS_PORTS = [443, 2053, 2083, 2087, 2096, 8443];
+    
     const defaultHttpsPorts = [443];
     const defaultHttpPorts = disableNonTLS ? [] : [80];
     const links = [];
@@ -1496,42 +996,61 @@ function generateLinksFromSource(list, user, workerDomain) {
         const nodeNameBase = item.isp.replace(/\s/g, '_');
         const safeIP = item.ip.includes(':') ? `[${item.ip}]` : item.ip;
         
-        let httpsPorts, httpPorts;
+        let portsToGenerate = [];
+        
         if (item.port) {
-            httpsPorts = [item.port];
-            // 如果启用了disableNonTLS，跳过非TLS端口（80和8080等）
-            httpPorts = disableNonTLS ? [] : [item.port];
+            // 有指定端口时，根据端口类型决定生成TLS或非TLS
+            const port = item.port;
+            
+            if (CF_HTTPS_PORTS.includes(port)) {
+                // CF HTTPS端口，只生成TLS节点
+                portsToGenerate.push({ port: port, tls: true });
+            } else if (CF_HTTP_PORTS.includes(port)) {
+                // CF HTTP端口，只生成非TLS节点（除非启用了disableNonTLS）
+                if (!disableNonTLS) {
+                    portsToGenerate.push({ port: port, tls: false });
+                }
+            } else {
+                // 非CF标准端口，只生成TLS节点（HTTP会被CF拦截）
+                portsToGenerate.push({ port: port, tls: true });
+            }
         } else {
-            httpsPorts = defaultHttpsPorts;
-            httpPorts = defaultHttpPorts;
+            // 没有指定端口时，使用默认端口
+            defaultHttpsPorts.forEach(port => {
+                portsToGenerate.push({ port: port, tls: true });
+            });
+            defaultHttpPorts.forEach(port => {
+                portsToGenerate.push({ port: port, tls: false });
+            });
         }
 
-        httpsPorts.forEach(port => {
-            const wsNodeName = `${nodeNameBase}-${port}-WS-TLS`;
-            
-            const wsParams = new URLSearchParams({ 
-                encryption: 'none', 
-                security: 'tls', 
-                sni: workerDomain, 
-                fp: 'chrome', 
-                type: 'ws', 
-                host: workerDomain, 
-                path: wsPath 
-            });
-            links.push(`${proto}://${user}@${safeIP}:${port}?${wsParams.toString()}#${encodeURIComponent(wsNodeName)}`);
-        });
-
-        httpPorts.forEach(port => {
-            const wsNodeName = `${nodeNameBase}-${port}-WS`;
-
-            const wsParams = new URLSearchParams({
-                encryption: 'none',
-                security: 'none',
-                type: 'ws',
-                host: workerDomain,
-                path: wsPath
-            });
-            links.push(`${proto}://${user}@${safeIP}:${port}?${wsParams.toString()}#${encodeURIComponent(wsNodeName)}`);
+        // 生成节点
+        portsToGenerate.forEach(({ port, tls }) => {
+            if (tls) {
+                // TLS节点
+                const wsNodeName = `${nodeNameBase}-${port}-WS-TLS`;
+                const wsParams = new URLSearchParams({ 
+                    encryption: 'none', 
+                    security: 'tls', 
+                    sni: workerDomain, 
+                    fp: 'chrome', 
+                    type: 'ws', 
+                    host: workerDomain, 
+                    path: wsPath 
+                });
+                links.push(`${proto}://${user}@${safeIP}:${port}?${wsParams.toString()}#${encodeURIComponent(wsNodeName)}`);
+            } else {
+                // 非TLS节点
+                const wsNodeName = `${nodeNameBase}-${port}-WS`;
+                const wsParams = new URLSearchParams({
+                    encryption: 'none',
+                    security: 'none',
+                    type: 'ws',
+                    host: workerDomain,
+                    path: wsPath
+                });
+                links.push(`${proto}://${user}@${safeIP}:${port}?${wsParams.toString()}#${encodeURIComponent(wsNodeName)}`);
+            }
         });
     });
     return links;
@@ -2712,14 +2231,36 @@ async function fetchAndParseNewIPs() {
 }
 
 function generateLinksFromNewIPs(list, user, workerDomain) {
+    // Cloudflare支持的端口
+    const CF_HTTP_PORTS = [80, 8080, 8880, 2052, 2082, 2086, 2095];
+    const CF_HTTPS_PORTS = [443, 2053, 2083, 2087, 2096, 8443];
+    
     const links = [];
     const wsPath = encodeURIComponent('/?ed=2048');
     const proto = atob('dmxlc3M=');
     
     list.forEach(item => {
         const nodeName = item.name.replace(/\s/g, '_');
-        const link = `${proto}://${user}@${item.ip}:${item.port}?encryption=none&security=tls&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(nodeName)}`;
-        links.push(link);
+        const port = item.port;
+        
+        if (CF_HTTPS_PORTS.includes(port)) {
+            // CF HTTPS端口，生成TLS节点
+            const wsNodeName = `${nodeName}-${port}-WS-TLS`;
+            const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=tls&sni=${workerDomain}&fp=chrome&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
+            links.push(link);
+        } else if (CF_HTTP_PORTS.includes(port)) {
+            // CF HTTP端口，生成非TLS节点（除非启用了disableNonTLS）
+            if (!disableNonTLS) {
+                const wsNodeName = `${nodeName}-${port}-WS`;
+                const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=none&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
+                links.push(link);
+            }
+        } else {
+            // 非CF标准端口，只生成TLS节点（HTTP会被CF拦截）
+            const wsNodeName = `${nodeName}-${port}-WS-TLS`;
+            const link = `${proto}://${user}@${item.ip}:${port}?encryption=none&security=tls&sni=${workerDomain}&fp=chrome&type=ws&host=${workerDomain}&path=${wsPath}#${encodeURIComponent(wsNodeName)}`;
+            links.push(link);
+        }
     });
     return links;
 }
