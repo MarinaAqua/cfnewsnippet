@@ -687,7 +687,7 @@ export default {
             </div>
             <div class="terminal-line">
                 <span class="terminal-prompt">root:~$</span>
-                <input type="text" class="terminal-input" id="uuidInput" placeholder="输入U变量的内容并且回车..." autofocus>
+                <input type="text" class="terminal-input" id="uuidInput" placeholder="Enter the content of the U variable and press Enter..." autofocus>
                 <span class="terminal-cursor"></span>
             </div>
         </div>
@@ -820,7 +820,7 @@ export default {
 							if (user === authToken) {
 								return await handleSubscriptionRequest(request, user, url);
 							} else {
-								return new Response(JSON.stringify({ error: 'UUID错误' }), { 
+								return new Response(JSON.stringify({ error: 'UUID error' }), { 
 									status: 403,
 									headers: { 'Content-Type': 'application/json' }
 								});
@@ -850,11 +850,11 @@ async function handleSubscriptionRequest(request, user, url = null) {
     const target = url.searchParams.get('target') || 'base64';
 
     if (currentWorkerRegion === 'CUSTOM') {
-        const nativeList = [{ ip: workerDomain, isp: '原生地址' }];
+        const nativeList = [{ ip: workerDomain, isp: 'Native Address' }];
         finalLinks.push(...generateLinksFromSource(nativeList, user, workerDomain));
     } else {
         try {
-            const nativeList = [{ ip: workerDomain, isp: '原生地址' }];
+            const nativeList = [{ ip: workerDomain, isp: 'Native Address' }];
             finalLinks.push(...generateLinksFromSource(nativeList, user, workerDomain));
         } catch (error) {
             if (!currentWorkerRegion) {
@@ -868,7 +868,7 @@ async function handleSubscriptionRequest(request, user, url = null) {
                 const backupList = [{ ip: fallbackAddress, isp: 'ProxyIP-' + currentWorkerRegion }];
                 finalLinks.push(...generateLinksFromSource(backupList, user, workerDomain));
             } else {
-                const nativeList = [{ ip: workerDomain, isp: '原生地址' }];
+                const nativeList = [{ ip: workerDomain, isp: 'Native Address' }];
                 finalLinks.push(...generateLinksFromSource(nativeList, user, workerDomain));
             }
         }
@@ -878,7 +878,7 @@ async function handleSubscriptionRequest(request, user, url = null) {
     
     if (disablePreferred) {
     } else if (hasCustomPreferred) {
-        // 使用yx配置的优选IP（包含API添加的）
+        // Use the preferred IP configured by yx（Contains API additions）
         if (customPreferredIPs.length > 0) {
             finalLinks.push(...generateLinksFromSource(customPreferredIPs, user, workerDomain));
         }
@@ -935,7 +935,7 @@ async function handleSubscriptionRequest(request, user, url = null) {
     }
 
     if (finalLinks.length === 0) {
-        const errorRemark = "所有节点获取失败";
+        const errorRemark = "Failed to obtain all nodes";
         const proto = atob('dmxlc3M=');
         const errorLink = `${proto}://00000000-0000-0000-0000-000000000000@127.0.0.1:80?encryption=none&security=none&type=ws&host=error.com&path=%2F#${encodeURIComponent(errorRemark)}`;
         finalLinks.push(errorLink);
@@ -982,14 +982,14 @@ async function handleSubscriptionRequest(request, user, url = null) {
 }
 
 function generateLinksFromSource(list, user, workerDomain) {
-    // Cloudflare支持的端口
+    // Cloudflare supported ports
     const CF_HTTP_PORTS = [80, 8080, 8880, 2052, 2082, 2086, 2095];
     const CF_HTTPS_PORTS = [443, 2053, 2083, 2087, 2096, 8443];
     
     const defaultHttpsPorts = [443];
     const defaultHttpPorts = disableNonTLS ? [] : [80];
     const links = [];
-    const wsPath = encodeURIComponent('/?ed=2048');
+    const wsPath = encodeURIComponent('/ClubGratis');
     const proto = atob('dmxlc3M=');
 
     list.forEach(item => {
@@ -999,23 +999,23 @@ function generateLinksFromSource(list, user, workerDomain) {
         let portsToGenerate = [];
         
         if (item.port) {
-            // 有指定端口时，根据端口类型决定生成TLS或非TLS
+            // When a port is specified, TLS or non-TLS is generated based on the port type.
             const port = item.port;
             
             if (CF_HTTPS_PORTS.includes(port)) {
-                // CF HTTPS端口，只生成TLS节点
+                // CF HTTPS port, only generates TLS nodes
                 portsToGenerate.push({ port: port, tls: true });
             } else if (CF_HTTP_PORTS.includes(port)) {
-                // CF HTTP端口，只生成非TLS节点（除非启用了disableNonTLS）
+                // CF HTTP port, only generates non-TLS nodes (unless disableNonTLS is enabled）
                 if (!disableNonTLS) {
                     portsToGenerate.push({ port: port, tls: false });
                 }
             } else {
-                // 非CF标准端口，只生成TLS节点（HTTP会被CF拦截）
+                // Non-CF standard port, only TLS nodes are generated (HTTP will be intercepted by CF）
                 portsToGenerate.push({ port: port, tls: true });
             }
         } else {
-            // 没有指定端口时，使用默认端口
+            // When no port is specified, the default port is used
             defaultHttpsPorts.forEach(port => {
                 portsToGenerate.push({ port: port, tls: true });
             });
@@ -1024,10 +1024,10 @@ function generateLinksFromSource(list, user, workerDomain) {
             });
         }
 
-        // 生成节点
+        // Generate Node
         portsToGenerate.forEach(({ port, tls }) => {
             if (tls) {
-                // TLS节点
+                // TLS Node
                 const wsNodeName = `${nodeNameBase}-${port}-WS-TLS`;
                 const wsParams = new URLSearchParams({ 
                     encryption: 'none', 
@@ -1040,7 +1040,7 @@ function generateLinksFromSource(list, user, workerDomain) {
                 });
                 links.push(`${proto}://${user}@${safeIP}:${port}?${wsParams.toString()}#${encodeURIComponent(wsNodeName)}`);
             } else {
-                // 非TLS节点
+                // Non-TLS nodes
                 const wsNodeName = `${nodeNameBase}-${port}-WS`;
                 const wsParams = new URLSearchParams({
                     encryption: 'none',
@@ -1088,7 +1088,7 @@ async function fetchAndParseWetest(url) {
         const html = await response.text();
         const results = [];
         const rowRegex = /<tr[\s\S]*?<\/tr>/g;
-        const cellRegex = /<td data-label="线路名称">(.+?)<\/td>[\s\S]*?<td data-label="优选地址">([\d.:a-fA-F]+)<\/td>/;
+        const cellRegex = /<td data-label="Line Name">(.+?)<\/td>[\s\S]*?<td data-label="优选地址">([\d.:a-fA-F]+)<\/td>/;
 
         let match;
         while ((match = rowRegex.exec(html)) !== null) {
@@ -1335,7 +1335,7 @@ async function handleSubscriptionPage(request, user = null) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>订阅中心</title>
+    <title>Subscription Center</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -1545,14 +1545,14 @@ async function handleSubscriptionPage(request, user = null) {
     <div class="matrix-bg"></div>
     <div class="matrix-rain"></div>
     <div class="matrix-code-rain" id="matrixCodeRain"></div>
-    <div class="matrix-text">代理订阅中心 v1.1</div>
+    <div class="matrix-text">Agent Subscription Center v1.1</div>
     <div class="container">
         <div class="header">
-            <h1 class="title">代理订阅中心</h1>
-            <p class="subtitle">多客户端支持 • 智能优选 • 一键生成</p>
+            <h1 class="title">Agent Subscription Center</h1>
+            <p class="subtitle">Multi-client support • Smart Optimization • One-click generation</p>
         </div>
         <div class="card">
-            <h2 class="card-title">[ 选择客户端 ]</h2>
+            <h2 class="card-title">[ Select Client ]</h2>
             <div class="client-grid">
                 <button class="client-btn" onclick="generateClientLink(atob('Y2xhc2g='))">CLASH</button>
                 <button class="client-btn" onclick="generateClientLink(atob('c3VyZ2U='))">SURGE</button>
@@ -1563,12 +1563,12 @@ async function handleSubscriptionPage(request, user = null) {
             <div class="subscription-url" id="clientSubscriptionUrl"></div>
         </div>
         <div class="card">
-            <h2 class="card-title">[ 快速获取 ]</h2>
-            <button class="generate-btn" onclick="getBase64Subscription()">获取订阅链接</button>
+            <h2 class="card-title">[ Quick Access ]</h2>
+            <button class="generate-btn" onclick="getBase64Subscription()">Get subscription link</button>
             <div class="subscription-url" id="base64SubscriptionUrl"></div>
         </div>
         <div class="card">
-            <h2 class="card-title">[ 系统状态 ]</h2>
+            <h2 class="card-title">[ System Status ]</h2>
             <div id="systemStatus" style="margin: 20px 0; padding: 15px; background: rgba(0, 20, 0, 0.8); border: 2px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.1); position: relative; overflow: hidden;">
                 <div style="color: #00ff00; margin-bottom: 15px; font-weight: bold; text-shadow: 0 0 5px #00ff00;">[ 系统检测中... ]</div>
                 <div id="regionStatus" style="margin: 8px 0; color: #00ff00; font-family: 'Courier New', monospace; text-shadow: 0 0 3px #00ff00;">Worker地区: 检测中...</div>
