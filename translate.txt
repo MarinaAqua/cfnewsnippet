@@ -419,7 +419,7 @@ export default {
 					if (isValidFormat(user) && user === authToken) {
 						return await handleConfigAPI(request);
 					} else if (isValidFormat(user)) {
-						return new Response(JSON.stringify({ error: 'UUID错误' }), { 
+						return new Response(JSON.stringify({ error: 'UUID error' }), { 
 							status: 403,
 							headers: { 'Content-Type': 'application/json' }
 						});
@@ -457,14 +457,14 @@ export default {
 			
 			if (request.method === 'GET') {
 				if (url.pathname === '/region') {
-					// 优先使用KV配置，然后使用环境变量
+					// Use KV configuration first, then use environment variables
 					const customIP = getConfigValue('p', env.p || env.P);
 					const manualRegion = getConfigValue('wk', env.wk || env.WK);
 					
 					if (manualRegion && manualRegion.trim()) {
 						return new Response(JSON.stringify({
 							region: manualRegion.trim().toUpperCase(),
-							detectionMethod: '手动指定地区',
+							detectionMethod: 'Manually specify region',
 							manualRegion: manualRegion.trim().toUpperCase(),
 							timestamp: new Date().toISOString()
 						}), {
@@ -473,7 +473,7 @@ export default {
 					} else if (customIP && customIP.trim()) {
 						return new Response(JSON.stringify({
 							region: 'CUSTOM',
-							detectionMethod: '自定义ProxyIP模式',
+							detectionMethod: 'Custom ProxyIP Mode',
 							customIP: customIP,
 							timestamp: new Date().toISOString()
 						}), {
@@ -483,7 +483,7 @@ export default {
 						const detectedRegion = await detectWorkerRegion(request);
 						return new Response(JSON.stringify({
 							region: detectedRegion,
-							detectionMethod: 'API检测',
+							detectionMethod: 'API Testing',
 							timestamp: new Date().toISOString()
 						}), {
 							headers: { 'Content-Type': 'application/json' }
@@ -496,7 +496,7 @@ export default {
 						const testRegion = await detectWorkerRegion(request);
 						return new Response(JSON.stringify({
 							detectedRegion: testRegion,
-							message: 'API测试完成',
+							message: 'API testing completed',
 							timestamp: new Date().toISOString()
 						}), {
 							headers: { 'Content-Type': 'application/json' }
@@ -504,7 +504,7 @@ export default {
 					} catch (error) {
 						return new Response(JSON.stringify({
 							error: error.message,
-							message: 'API测试失败'
+							message: 'API test failure'
 						}), {
 							status: 500,
 							headers: { 'Content-Type': 'application/json' }
@@ -519,7 +519,7 @@ export default {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>终端</title>
+    <title>terminal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -662,7 +662,7 @@ export default {
     <div class="matrix-bg"></div>
     <div class="matrix-rain"></div>
     <div class="matrix-code-rain" id="matrixCodeRain"></div>
-    <div class="matrix-text">终端</div>
+    <div class="matrix-text">terminal</div>
     <div class="terminal">
         <div class="terminal-header">
             <div class="terminal-buttons">
@@ -670,20 +670,20 @@ export default {
                 <div class="terminal-button"></div>
                 <div class="terminal-button"></div>
             </div>
-            <div class="terminal-title">终端</div>
+            <div class="terminal-title">terminal</div>
         </div>
         <div class="terminal-body" id="terminalBody">
             <div class="terminal-line">
                 <span class="terminal-prompt">root:~$</span>
-                <span class="terminal-output">恭喜你来到这</span>
+                <span class="terminal-output">Congratulations on coming here</span>
             </div>
             <div class="terminal-line">
                 <span class="terminal-prompt">root:~$</span>
-                <span class="terminal-output">请输入你U变量的值</span>
+                <span class="terminal-output">Please enter the value of your U variable</span>
             </div>
             <div class="terminal-line">
                 <span class="terminal-prompt">root:~$</span>
-                <span class="terminal-output">命令: connect [UUID]</span>
+                <span class="terminal-output">Order: connect [UUID]</span>
             </div>
             <div class="terminal-line">
                 <span class="terminal-prompt">root:~$</span>
@@ -768,16 +768,16 @@ export default {
                 addTerminalLine('connect ' + uuid, 'output');
                 
                 if (isValidUUID(uuid)) {
-                    addTerminalLine('正在入侵...', 'output');
+                    addTerminalLine('Invasion...', 'output');
                     setTimeout(() => {
-                        addTerminalLine('连接成功！返回结果...', 'success');
+                        addTerminalLine('Connection successful! Return result...', 'success');
                         setTimeout(() => {
                             window.location.href = '/' + uuid;
                         }, 1000);
                     }, 500);
                 } else {
-                    addTerminalLine('错误: 无效的UUID格式', 'error');
-                    addTerminalLine('请重新输入有效的UUID', 'output');
+                    addTerminalLine('Error: Invalid UUID format', 'error');
+                    addTerminalLine('Please re-enter a valid UUID', 'output');
                 }
                 
                 input.value = '';
@@ -805,7 +805,7 @@ export default {
 						if (user === authToken) {
 							return await handleSubscriptionPage(request, user);
 						} else {
-							return new Response(JSON.stringify({ error: 'UUID错误 请注意变量名称是u不是uuid' }), { 
+							return new Response(JSON.stringify({ error: 'UUID error Please note that the variable name is u, not uuid' }), { 
 								status: 403,
 								headers: { 'Content-Type': 'application/json' }
 							});
